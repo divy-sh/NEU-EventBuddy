@@ -19,6 +19,7 @@ import { useHistory} from "react-router-dom";
 import { IoHeart, IoHeartOutline } from "react-icons/io5";
 import routes from "../../routes";
 
+
 export default function NFT(props) {
   const history = useHistory();
   const { key, name, start_time, end_time, description, image, author, entry_fees, raw_event, eventInfo } = props;
@@ -26,11 +27,14 @@ export default function NFT(props) {
   const textColor = useColorModeValue("navy.700", "white");
   const textColorBid = useColorModeValue("brand.500", "white");
 
-  const goToEvent = (raw_event) => {
-    history.push({
-      pathname: '/admin/event-info',
-      state: { eventData: raw_event },
-    });
+
+  function goToEvent (raw_event) {
+    sessionStorage.setItem("selectedEvent", JSON.stringify(raw_event))
+    history.push('/admin/event-info');
+    // history.push({
+    //   pathname: '/admin/event-info',
+    //   state: { eventData: JSON.stringify(raw_event) },
+    // });
   }
 
   return (
@@ -155,7 +159,7 @@ export default function NFT(props) {
             </Text>
             {/* <Link href='http://localhost:3000/#/admin/event-info'>More Info</Link> */}
             <Button
-              // onClick={goToEvent(raw_event)}
+              onClick={() => {goToEvent(raw_event)}}
               variant='darkBrand'
               color='white'
               fontSize='sm'

@@ -8,6 +8,7 @@ import {
   Flex,
   Grid,
   Link,
+  Input,
   Text,
   useColorModeValue,
   SimpleGrid,
@@ -15,8 +16,7 @@ import {
 
 // Custom components
 import Banner from "views/admin/marketplace/components/Banner";
-import HistoryItem from "views/admin/marketplace/components/HistoryItem";
-import NFT from "components/card/NFT";
+import Information from "views/admin/profile/components/Information";
 import Card from "components/card/Card.js";
 
 // Assets
@@ -32,18 +32,29 @@ export default function EventDisplay() {
   // Chakra Color Mode
   const textColor = useColorModeValue("secondaryGray.900", "white");
   const textColorBrand = useColorModeValue("brand.500", "white");
+  const textColorPrimary = useColorModeValue("secondaryGray.900", "white");
+  const textColorSecondary = "gray.400";
+  const cardShadow = useColorModeValue(
+    "0px 18px 40px rgba(112, 144, 176, 0.12)",
+    "unset"
+  );
 
   const [registeredEvents, setRegisteredEvents] = useState([]);
   const history = useHistory();
-  // const navigate = useNavigate();
+  // const location = useLocation();
+  // console.log(location.state)
+  // const eventData = JSON.parse(location.state.eventData) || null;
+  const [selectedEvent, setSelectedEvent] = useState({});
+  const [capacity, setCapacity] = useState(1);
+  const addCapacityCart = () => {
+    setCapacity(capacity + 1);
+  }
 
   useEffect(() => {
-
+    var selectedE = JSON.parse(sessionStorage.getItem("selectedEvent")) || null;
+    console.log("selected", selectedE)
+    setSelectedEvent(selectedE)
   }, [])
-
-  // useEffect(() => {
-  //   sessionStorage.setItem("registeredEvents",registeredEvents)
-  // }, [registeredEvents])
 
   // Function to add an event to the array
   const addEvent = () => {
@@ -68,158 +79,110 @@ export default function EventDisplay() {
   //   });
   // };
 
-  const removeEvent = (id) => {
-    // Filter out the event with the specified id
-    const updatedEvents = registeredEvents.filter((event) => event.id !== id);
-    // Update the state with the new array of events
-    setRegisteredEvents(updatedEvents);
-  };
 
   return (
-    <Box pt={{ base: "180px", md: "80px", xl: "80px" }}>
-      {/* Main Fields */}
-      <Grid
-        mb='20px'
-        gridTemplateColumns={{ xl: "repeat(3, 1fr)", "2xl": "1fr 0.46fr" }}
-        gap={{ base: "20px", xl: "20px" }}
-        display={{ base: "block", xl: "grid" }}>
-        <Flex
-          flexDirection='column'
-          gridArea={{ xl: "1 / 1 / 2 / 3", "2xl": "1 / 1 / 2 / 2" }}>
-          <Banner />
-          <Flex direction='column'>
-            <Flex
-              mt='45px'
-              mb='20px'
-              justifyContent='space-between'
-              direction={{ base: "column", md: "row" }}
-              align={{ base: "start", md: "center" }}>
-              <Text color={textColor} fontSize='2xl' ms='24px' fontWeight='700'>
-                Trending Events
-              </Text>
-              <Flex
-                align='center'
-                me='20px'
-                ms={{ base: "24px", md: "0px" }}
-                mt={{ base: "20px", md: "0px" }}>
-                <Link
-                  color={textColorBrand}
-                  fontWeight='500'
-                  me={{ base: "34px", md: "44px" }}
-                  to='#art'>
-                  Cultural
-                </Link>
-                <Link
-                  color={textColorBrand}
-                  fontWeight='500'
-                  me={{ base: "34px", md: "44px" }}
-                  to='#music'>
-                  Music
-                </Link>
-                <Link
-                  color={textColorBrand}
-                  fontWeight='500'
-                  me={{ base: "34px", md: "44px" }}
-                  to='#collectibles'>
-                  Career Fairs
-                </Link>
-                <Link color={textColorBrand} fontWeight='500' to='#sports'>
-                  Sports
-                </Link>
-              </Flex>
-            </Flex>
-            <SimpleGrid columns={{ base: 1, md: 3 }} gap='20px'>
-              {registeredEvents.map((event) => (
-                <HistoryItem
-                  key={event.id} 
-                  name={event.name}
-                  author='By Mark Benjamin'
-                  date={event.date}
-                  image={Nft5}
-                  price='0.91 ETH'
-                  onRemove={() => removeEvent(event.id)}
-                />
-              ))}
-              <NFT
-                name='Abstract Colors'
-                author='By Esthera Jackson'
-                bidders={[
-                ]}
-                image={Nft1}
-                currentbid='0.91 ETH'
-                download=''
-                eventInfo = {routes[0]}
-              />
-              <button onClick={addEvent}>Add Event</button>
-              <NFT
-                name='ETH AI Brain'
-                author='By Nick Wilson'
-                bidders={[
-                
-                ]}
-                image={Nft2}
-                currentbid='0.91 ETH'
-                download='#'
-              />
-              <NFT
-                name='Mesh Gradients '
-                author='By Will Smith'
-                bidders={[
-                  
-                ]}
-                image={Nft3}
-                currentbid='0.91 ETH'
-                download='auth/sign-in'
-              />
-            </SimpleGrid>
-            <Text
-              mt='45px'
-              mb='36px'
-              color={textColor}
-              fontSize='2xl'
-              ms='24px'
-              fontWeight='700'>
-              Recently Added
-            </Text>
-            <SimpleGrid
-              columns={{ base: 1, md: 3 }}
-              gap='20px'
-              mb={{ base: "20px", xl: "0px" }}>
-              <NFT
-                name='Swipe Circles'
-                author='By Peter Will'
-                bidders={[
-                  
-                ]}
-                image={Nft4}
-                currentbid='0.91 ETH'
-                download='#'
-              />
-              <NFT
-                name='Colorful Heaven'
-                author='By Mark Benjamin'
-                bidders={[
-                
-                ]}
-                image={Nft5}
-                currentbid='0.91 ETH'
-                download='#'
-              />
-              <NFT
-                name='3D Cubes Art'
-                author='By Manny Gates'
-                bidders={[
-                
-                ]}
-                image={Nft6}
-                currentbid='0.91 ETH'
-                download='#'
-              />
-            </SimpleGrid>
-          </Flex>
-        </Flex>
-      </Grid>
-      {/* Delete Product */}
-    </Box>
+    <Card
+      mt="100px"
+      direction='row'
+      w='100%'
+      px='2px'
+      overflowX={{ sm: "scroll", lg: "hidden" }}>
+        <Banner/>
+      <Flex pl='25px' justify='space-between' mb='10px' align='center'>
+        <Text
+          color={textColorPrimary}
+          fontWeight='bold'
+          fontSize='4xl'
+          mt='40px'
+          mb='4px'>
+          {selectedEvent.event_name}
+        </Text>
+      </Flex>
+        <Box p={{ base: "10px", md: "40px", xl: "40px" }}>
+        <Text color={textColorSecondary} fontSize='md' me='26px' mb='40px'>
+          As we live, our hearts turn colder. Cause pain is what we go through as
+          we become older. We get insulted by others, lose trust for those others.
+          We get back stabbed by friends. It becomes harder for us to give others
+          a hand. We get our heart broken by people we love, even that we give
+          them all...
+        </Text>
+        <SimpleGrid columns='2' gap='20px'>
+        <Information
+          boxShadow={cardShadow}
+          title='Start Time'
+          value={selectedEvent.start_time}
+        />
+        <Information
+          boxShadow={cardShadow}
+          title='End Time'
+          value={selectedEvent.end_time}
+        />
+        <Information
+          boxShadow={cardShadow}
+          title='Entry Fees'
+          value={selectedEvent.entry_fees}
+        />
+        <Information
+          boxShadow={cardShadow}
+          title='Capacity'
+          value={selectedEvent.capacity}
+        />
+        <Information
+          boxShadow={cardShadow}
+          title='Last Registration Date'
+          value={selectedEvent.last_registration_date}
+        />
+        <Information
+          boxShadow={cardShadow}
+          title='Organization ID'
+          value={selectedEvent.org_id}
+        />
+      </SimpleGrid>
+      <br/>
+      <Flex pl='25px' justify='space-between' mb='10px' align='center'>
+      <Button
+        // onClick={() => {goToEven}}
+        variant='darkBrand'
+        color='white'
+        fontSize='xl'
+        fontWeight='500'
+        borderRadius='10px'
+        px='24px'
+        py='5px'>
+        Buy Tickets
+      </Button> 
+      <Text
+          color={textColorPrimary}
+          fontWeight='bold'
+          fontSize='2xl'
+          mt='10px'
+          mb='4px'>
+          Your Tickets Count : {capacity}
+        </Text>
+      <Button
+        onClick={addCapacityCart}
+        variant='darkBrand'
+        color='white'
+        fontSize=''
+        fontWeight='300'
+        borderRadius='10px'
+        px='20px'
+        py='5px'>
+        Add Ticket Count
+      </Button> 
+      <Button
+        onClick={() => {setCapacity(1)}}
+        variant='darkBrand'
+        color='white'
+        fontSize=''
+        fontWeight='300'
+        borderRadius='10px'
+        px='10px'
+        py='5px'>
+        Reset
+      </Button> 
+      </Flex>
+      </Box>
+    </Card>
   );
 }

@@ -29,7 +29,7 @@ import { RiEyeCloseLine } from "react-icons/ri";
 
 function SignIn() {
   const history = useHistory();
-  const API_ENDPOINT = 'http://mydomain.local:8080'
+  const API_ENDPOINT = 'http://localhost:8080'
 
   const handleLogin = async (e) => {
   
@@ -38,7 +38,7 @@ function SignIn() {
     const {email, password} = e.target;
 
     console.log(`Form submitted, ${email.value}, ${password.value}`)
-    var postData = { email: email.value, password: password.value}
+    
     await axios.post(`${API_ENDPOINT}/user/login`, {
         "email_id" : email.value,
         "user_password" : password.value,

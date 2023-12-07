@@ -21,8 +21,8 @@ import EventDisplay from "views/admin/marketplace/event";
 import SignInCentered from "views/auth/signIn";
 import SignUp from "views/auth/register";
 
-const userLoggedData = JSON.parse(sessionStorage.getItem("userLoggedData"));
-
+const userLoggedData = JSON.parse(sessionStorage.getItem("userLoggedData")) || {'admin':false};
+console.log("herhe", userLoggedData);
 var routes = [];
 
 if(userLoggedData.admin == false) {
