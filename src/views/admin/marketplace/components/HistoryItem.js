@@ -1,13 +1,17 @@
 import React from "react";
 // Chakra imports
-import { Flex, Icon, Image, Text, useColorModeValue } from "@chakra-ui/react";
+import { Button, Flex, Icon, Image, Text, useColorModeValue } from "@chakra-ui/react";
 // Custom components
 import Card from "components/card/Card.js";
 // Assets
 import { FaEthereum } from "react-icons/fa";
 
 export default function NFT(props) {
-  const { image, name, author, date, price } = props;
+  const { key, name, author, date, price, image, onRemove } = props;
+  
+  const handleRemove = () => {
+    onRemove();
+  };
   // Chakra Color Mode
   const textColor = useColorModeValue("brands.900", "white");
   const bgItem = useColorModeValue(
@@ -58,9 +62,14 @@ export default function NFT(props) {
               {price}
             </Text>
           </Flex>
-          <Text ms='auto' fontWeight='700' fontSize='sm' color={textColorDate}>
-            {date}
-          </Text>
+          <Flex
+            me={{ base: "4px", md: "32px", xl: "10px", "3xl": "32px" }}
+            align='center'>
+              <Text ms='auto' fontWeight='700' fontSize='sm' color={textColorDate}>
+                {date}
+              </Text>
+            <Icon as={FaEthereum} onClick={onRemove} color={textColor} width='9px' me='7px' />
+          </Flex>
         </Flex>
       </Flex>
     </Card>

@@ -1,10 +1,9 @@
-import React from "react";
+import React, {useState} from "react";
 import { NavLink } from "react-router-dom";
 // Chakra imports
 import {
   Box,
   Button,
-  Checkbox,
   Flex,
   FormControl,
   FormLabel,
@@ -14,71 +13,71 @@ import {
   InputGroup,
   InputRightElement,
   Text,
-  useColorModeValue,
+  useColorModeValue
 } from "@chakra-ui/react";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 // Custom components
-import { HSeparator } from "components/separator/Separator";
 import DefaultAuth from "layouts/auth/Default";
 import axios from "axios";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 // Assets
 import illustration from "assets/img/auth/auth.png";
 import { FcGoogle } from "react-icons/fc";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";
 
-function SignIn() {
+function SignUp() {
+
+  const API_ENDPOINT = 'http://localhost:8080'
+
   const history = useHistory();
-  const API_ENDPOINT = 'http://mydomain.local:8080'
-
-  const handleLogin = async (e) => {
+    
+  const handleSubmit = async (e) => {
   
-    e.preventDefault();
+      e.preventDefault();
 
-    const {email, password} = e.target;
+      const {firstName, lastName, birthDate, email, password} = e.target;
 
-    console.log(`Form submitted, ${email.value}, ${password.value}`)
-    var postData = { email: email.value, password: password.value}
-    await axios.post(`${API_ENDPOINT}/user/login`, {
+      console.log(`Form submitted, ${firstName.value}, ${lastName.value},${birthDate.value} ,${email.value}, ${password.value}`)
+      
+      // Pass to API
+      await axios.post(`${API_ENDPOINT}/user/register`,
+       {
         "email_id" : email.value,
         "user_password" : password.value,
+        "first_name" : firstName.value,
+        "last_name" : lastName.value,
+        "date_of_birth" : birthDate.value,
+        "is_organizer" : false
       })
         .then(function (response) {
           console.log(response);
           if(response.status == 200) {
-            sessionStorage.setItem("userLoggedData", JSON.stringify(response.data.user))
-            history.push('/admin/profile')
+            console.log(history)
+            history.push('/admin/sign-in')
           }
         })
         .catch(function (error) {
           console.log(error);
         });
-    // await axios.post('', postData,)
-    // .then(function (response) {
-    //   console.log(response);
-    // })
-    // .catch(function (error) {
-    //   console.log(error);
-    // });
-    // Pass to API
   }
+
 
   // Chakra color mode
   const textColor = useColorModeValue("navy.700", "white");
   const textColorSecondary = "gray.400";
-  const textColorDetails = useColorModeValue("navy.700", "secondaryGray.600");
-  const textColorBrand = useColorModeValue("brand.500", "white");
+  // const textColorDetails = useColorModeValue("navy.700", "secondaryGray.600");
+  // const textColorBrand = useColorModeValue("brand.500", "white");
   const brandStars = useColorModeValue("brand.500", "brand.400");
-  const googleBg = useColorModeValue("secondaryGray.300", "whiteAlpha.200");
-  const googleText = useColorModeValue("navy.700", "white");
-  const googleHover = useColorModeValue(
-    { bg: "gray.200" },
-    { bg: "whiteAlpha.300" }
-  );
-  const googleActive = useColorModeValue(
-    { bg: "secondaryGray.300" },
-    { bg: "whiteAlpha.200" }
-  );
+  // const googleBg = useColorModeValue("secondaryGray.300", "whiteAlpha.200");
+  // const googleText = useColorModeValue("navy.700", "white");
+  // const googleHover = useColorModeValue(
+  //   { bg: "gray.200" },
+  //   { bg: "whiteAlpha.300" }
+  // );
+  // const googleActive = useColorModeValue(
+  //   { bg: "secondaryGray.300" },
+  //   { bg: "whiteAlpha.200" }
+  // );
   const [show, setShow] = React.useState(false);
   const handleClick = () => setShow(!show);
   return (
@@ -93,11 +92,11 @@ function SignIn() {
         justifyContent='center'
         mb={{ base: "30px", md: "60px" }}
         px={{ base: "25px", md: "0px" }}
-        mt={{ base: "40px", md: "14vh" }}
+        mt={{ base: "40px", md: "8vh" }}
         flexDirection='column'>
         <Box me='auto'>
           <Heading color={textColor} fontSize='36px' mb='10px'>
-            Sign In
+            Sign Up
           </Heading>
           <Text
             mb='36px'
@@ -105,7 +104,7 @@ function SignIn() {
             color={textColorSecondary}
             fontWeight='400'
             fontSize='md'>
-            Enter your email and password to sign in!
+            Enter your email and password to sign Up!
           </Text>
         </Box>
         <Flex
@@ -118,7 +117,7 @@ function SignIn() {
           mx={{ base: "auto", lg: "unset" }}
           me='auto'
           mb={{ base: "20px", md: "auto" }}>
-          <Button
+          {/* <Button
             fontSize='sm'
             me='0px'
             mb='26px'
@@ -133,16 +132,35 @@ function SignIn() {
             _focus={googleActive}>
             <Icon as={FcGoogle} w='20px' h='20px' me='10px' />
             Sign in with Google
-          </Button>
+          </Button> 
           <Flex align='center' mb='25px'>
             <HSeparator />
             <Text color='gray.400' mx='14px'>
               or
             </Text>
             <HSeparator />
-          </Flex>
-          <form onSubmit={handleLogin}>
+        </Flex> */}
+        <form onSubmit={handleSubmit}>
           <FormControl>
+            {/* First Name  */}
+          <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
+              First Name
+            </FormLabel>
+            <Input variant='auth' name="firstName" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='text' 
+             placeholder='Hi ! Please enter your First Name' mb='24px' fontWeight='500' size='lg'
+            />
+            <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
+              Last Name
+            </FormLabel>
+            <Input variant='auth' name="lastName" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='text' 
+             placeholder='Please enter your Last Name' mb='24px' fontWeight='500' size='lg'
+            />
+            <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
+              Date of Birth
+            </FormLabel>
+            <Input variant='auth' name="birthDate" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='date' 
+            mb='24px' fontWeight='500' size='lg'
+            />
             <FormLabel
               display='flex'
               ms='4px'
@@ -158,14 +176,16 @@ function SignIn() {
               fontSize='sm'
               ms={{ base: "0px", md: "0px" }}
               type='email'
-              id = 'email'
-              name='email'
-              placeholder='Enter your email here'
+              name = 'email'
+              placeholder='mail@northeastern.edu'
               mb='24px'
               fontWeight='500'
               size='lg'
             />
-            <FormLabel ms='4px' fontSize='sm' fontWeight='500'
+            <FormLabel
+              ms='4px'
+              fontSize='sm'
+              fontWeight='500'
               color={textColor}
               display='flex'>
               Password<Text color={brandStars}>*</Text>
@@ -174,9 +194,8 @@ function SignIn() {
               <Input
                 isRequired={true}
                 fontSize='sm'
-                placeholder='Password goes here'
-                name='password'
-                id = 'password'
+                name = 'password'
+                placeholder='Min. 8 characters'
                 mb='24px'
                 size='lg'
                 type={show ? "text" : "password"}
@@ -191,7 +210,7 @@ function SignIn() {
                 />
               </InputRightElement>
             </InputGroup>
-            <Flex justifyContent='space-between' align='center' mb='24px'>
+            {/* <Flex justifyContent='space-between' align='center' mb='24px'>
               <FormControl display='flex' alignItems='center'>
                 <Checkbox
                   id='remember-login'
@@ -216,7 +235,7 @@ function SignIn() {
                   Forgot password?
                 </Text>
               </NavLink>
-            </Flex>
+            </Flex> */}
             <Button type="submit"
               fontSize='sm'
               variant='brand'
@@ -224,33 +243,14 @@ function SignIn() {
               w='100%'
               h='50'
               mb='24px'>
-              Sign In
+              Sign Up
             </Button>
           </FormControl>
           </form>
-          <Flex
-            flexDirection='column'
-            justifyContent='center'
-            alignItems='start'
-            maxW='100%'
-            mt='0px'>
-            <Text color={textColorDetails} fontWeight='400' fontSize='14px'>
-              Not registered yet?
-              <NavLink to='/auth/sign-up'>
-                <Text
-                  color={textColorBrand}
-                  as='span'
-                  ms='5px'
-                  fontWeight='500'>
-                  Create an Account
-                </Text>
-              </NavLink>
-            </Text>
-          </Flex>
         </Flex>
       </Flex>
     </DefaultAuth>
   );
 }
 
-export default SignIn;
+export default SignUp;

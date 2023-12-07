@@ -9,7 +9,7 @@ import {
   Tr,
   useColorModeValue,
 } from "@chakra-ui/react";
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import {
   useGlobalFilter,
   usePagination,
@@ -22,6 +22,19 @@ import Card from "components/card/Card";
 import Menu from "components/menu/MainMenu";
 export default function ColumnsTable(props) {
   const { columnsData, tableData } = props;
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/posts?_limit=10')
+       .then((response) => response.json())
+       .then((data) => {
+          console.log(data);
+          setPosts(data);
+       })
+       .catch((err) => {
+          console.log(err.message);
+       });
+ }, []);
 
   const columns = useMemo(() => columnsData, [columnsData]);
   const data = useMemo(() => tableData, [tableData]);
@@ -37,8 +50,7 @@ export default function ColumnsTable(props) {
   );
 
   const {
-    getTableProps,
-    getTableBodyProps,
+    getTableProps,getTableBodyProps,
     headerGroups,
     page,
     prepareRow,

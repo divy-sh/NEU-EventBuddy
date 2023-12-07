@@ -14,6 +14,7 @@ export default function SidebarDocs() {
   const borderColor = useColorModeValue("white", "navy.800");
 
   return (
+    /*
     <Flex
       justify='center'
       direction='column'
@@ -80,6 +81,7 @@ export default function SidebarDocs() {
           Upgrade to PRO
         </Button>
       </Link>
-    </Flex>
+    </Flex> */
+    ""
   );
 }

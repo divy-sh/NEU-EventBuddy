@@ -7,9 +7,12 @@ import AdminLayout from 'layouts/admin';
 import RtlLayout from 'layouts/rtl';
 import { ChakraProvider } from '@chakra-ui/react';
 import theme from 'theme/theme';
+import store from "./store";
+import { Provider } from 'redux';
 import { ThemeEditorProvider } from '@hypertheme-editor/chakra-ui';
 
 ReactDOM.render(
+	// <Provider store={store}>
 	<ChakraProvider theme={theme}>
 		<React.StrictMode>
 			<ThemeEditorProvider>

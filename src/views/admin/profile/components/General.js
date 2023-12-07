@@ -35,22 +35,22 @@ export default function GeneralInformation(props) {
       <SimpleGrid columns='2' gap='20px'>
         <Information
           boxShadow={cardShadow}
-          title='Education'
+          title='Email'
           value='Stanford University'
         />
         <Information
           boxShadow={cardShadow}
-          title='Languages'
+          title='First Name'
           value='English, Spanish, Italian'
         />
         <Information
           boxShadow={cardShadow}
-          title='Department'
+          title='Last Name'
           value='Product Design'
         />
         <Information
           boxShadow={cardShadow}
-          title='Work History'
+          title='Date Of Birth'
           value='Google, Facebook'
         />
         <Information

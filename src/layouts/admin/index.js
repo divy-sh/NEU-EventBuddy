@@ -14,6 +14,8 @@ export default function Dashboard(props) {
 	const { ...rest } = props;
 	// states and functions
 	const [ fixed ] = useState(false);
+	const isAdmin = sessionStorage.getItem("isAdmin");
+	console.log(isAdmin);
 	const [ toggleSidebar, setToggleSidebar ] = useState(false);
 	// functions for changing the states from components
 	const getRoute = () => {
@@ -102,7 +104,7 @@ export default function Dashboard(props) {
 	document.documentElement.dir = 'ltr';
 	return (
 		<Box>
-			<Box>
+			<Box>	
 				<SidebarContext.Provider
 					value={{
 						toggleSidebar,
@@ -148,7 +150,7 @@ export default function Dashboard(props) {
 							<Footer />
 						</Box>
 					</Box>
-				</SidebarContext.Provider>
+					</SidebarContext.Provider>
 			</Box>
 		</Box>
 	);

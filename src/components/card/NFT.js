@@ -15,13 +15,24 @@ import {
 import Card from "components/card/Card.js";
 // Assets
 import React, { useState } from "react";
+import { useHistory} from "react-router-dom";
 import { IoHeart, IoHeartOutline } from "react-icons/io5";
+import routes from "../../routes";
 
 export default function NFT(props) {
-  const { image, name, author, bidders, download, currentbid } = props;
+  const history = useHistory();
+  const { key, name, start_time, end_time, description, image, author, entry_fees, raw_event, eventInfo } = props;
   const [like, setLike] = useState(false);
   const textColor = useColorModeValue("navy.700", "white");
   const textColorBid = useColorModeValue("brand.500", "white");
+
+  const goToEvent = (raw_event) => {
+    history.push({
+      pathname: '/admin/event-info',
+      state: { eventData: raw_event },
+    });
+  }
+
   return (
     <Card p='20px'>
       <Flex direction={{ base: "column" }} justify='center'>
@@ -90,7 +101,7 @@ export default function NFT(props) {
                 }}
                 fontWeight='400'
                 me='14px'>
-                {author}
+                {description}
               </Text>
             </Flex>
             <AvatarGroup
@@ -105,9 +116,9 @@ export default function NFT(props) {
                 "2xl": "0px",
               }}
               fontSize='12px'>
-              {bidders.map((avt, key) => (
+              {/* {bidders.map((avt, key) => (
                 <Avatar key={key} src={avt} />
-              ))}
+              ))} */}
             </AvatarGroup>
           </Flex>
           <Flex
@@ -121,29 +132,39 @@ export default function NFT(props) {
               "2xl": "row",
             }}
             mt='25px'>
-            <Text fontWeight='700' fontSize='sm' color={textColorBid}>
-              Current Bid: {currentbid}
+            <Text fontWeight='300' fontSize='md' color={"darkgreen"}>
+              {start_time}
             </Text>
-            <Link
-              href={download}
-              mt={{
-                base: "0px",
-                md: "10px",
-                lg: "0px",
-                xl: "10px",
-                "2xl": "0px",
-              }}>
-              <Button
-                variant='darkBrand'
-                color='white'
-                fontSize='sm'
-                fontWeight='500'
-                borderRadius='70px'
-                px='24px'
-                py='5px'>
-                Place Bid
-              </Button>
-            </Link>
+            <Text fontWeight='300' fontSize='md' color={"darkgreen"}>
+              {end_time}
+            </Text>
+          </Flex>
+          <Flex
+            align='start'
+            justify='space-between'
+            direction={{
+              base: "row",
+              md: "column",
+              lg: "row",
+              xl: "column",
+              "2xl": "row",
+            }}
+            mt='25px'>
+            <Text fontWeight='700' fontSize='lg' color={"darkgreen"}>
+              Entry Fee: ${entry_fees}
+            </Text>
+            {/* <Link href='http://localhost:3000/#/admin/event-info'>More Info</Link> */}
+            <Button
+              // onClick={goToEvent(raw_event)}
+              variant='darkBrand'
+              color='white'
+              fontSize='sm'
+              fontWeight='500'
+              borderRadius='70px'
+              px='24px'
+              py='5px'>
+              View More
+            </Button>
           </Flex>
         </Flex>
       </Flex>
