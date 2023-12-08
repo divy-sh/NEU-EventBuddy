@@ -11,6 +11,7 @@ import {
   Text,
   useColorModeValue,
   SimpleGrid,
+  Center,
 } from "@chakra-ui/react";
 
 // Custom components
@@ -194,22 +195,21 @@ export default function Marketplace() {
                 </Link>
               </Flex>
             </Flex>
-            <SimpleGrid columns={{ base: 1, md: 3 }} gap='20px'>
+            <SimpleGrid columns={{ base: 1, md: 4 }} gap='20px'>
               {allEvents.map((event) => (
                 <NFT
                 key={event.event_id} 
                 name={event.event_name}
-                start_time = {event.start_time}
-                end_time = {event.end_time}
+                start_time = {"Start : " + new Date(event.start_time).toLocaleString('en-US', { timeZone: 'UTC' })}
+                end_time = {"End : " + new Date(event.end_time).toLocaleString('en-US', { timeZone: 'UTC' })}
                 description = {event.event_description}
-                author='By Esthera Jackson'
                 raw_event = {event}
                 image={Nft1}
                 entry_fees={event.entry_fees}
                 eventInfo = {routes[5]}
               />
               ))}
-              <button onClick={addEvent}>Add Event</button>
+              <Flex><button onClick={addEvent}>Add Event</button></Flex>
             </SimpleGrid>
           </Flex>
         </Flex>

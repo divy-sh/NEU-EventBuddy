@@ -32,7 +32,7 @@ export default function Tickets(props) {
           <Ticket key={index}
             boxShadow={cardShadow}
             mb='20px'
-            ticketData = {tData}
+            tData = {tData}
           />
         )
       })}
