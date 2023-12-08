@@ -3,108 +3,84 @@ import { Box, Grid } from "@chakra-ui/react";
 
 // Custom components
 import Banner from "views/admin/profile/components/Banner";
-import General from "views/admin/profile/components/General";
-import Notifications from "views/admin/profile/components/Notifications";
-import Projects from "views/admin/profile/components/Projects";
-import Storage from "views/admin/profile/components/Storage";
-import Upload from "views/admin/profile/components/Upload";
+import Tickets from "views/admin/profile/components/Tickets";
+import Transactions from "views/admin/profile/components/Transactions";
 
 // Assets
 import banner from "assets/img/auth/banner.png";
-import avatar from "assets/img/avatars/avatar4.png";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-export default function Overview() {
-  var userData = "";
+const API_ENDPOINT = 'http://localhost:8080';
 
-  useEffect(() => {
-    userData = JSON.parse(sessionStorage.getItem("userLoggedData"));
-    console.log(userData.admin);
-    // axios.get('http://10.110.68.156:8080/user/get?email=bilwal.sagar@gmail.com', )
-    // .then(function (response) {
-    //   console.log(response.data)
-    // })
-    // .catch(function (error) {
-    //   console.log(error);
-    // })
-  }, []) 
+export default function Overview() {
+  const userData = JSON.parse(sessionStorage.getItem('userLoggedData'));
+
+  const [allTransactions, setAllTransactions] = useState([]);
+  const [allTickets, setAllTickets] = useState([]);
+
+
+  useEffect(async () => {
+    await axios.get(`${API_ENDPOINT}/transaction/get/?email=${userData.email_id}`)
+        .then(function (response) {
+          console.log(response);
+          if(response.status == 200) {
+            setAllTransactions(response.data);
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+  await axios.get(`${API_ENDPOINT}/user/get/ticket?email=${userData.email_id}`)
+      .then(function (response) {
+        console.log(response);
+        if(response.status == 200) {
+          setAllTickets(response.data);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+      },
+  [])
+
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
-      {/* Main Fields */}
       <Grid
-        templateColumns={{
-          base: "1fr",
-          lg: "repeat(2, 1fr)",
-          "2xl": "1.34fr 1.62fr 1fr",
-        }}
         templateRows={{
-          base: "repeat(3, 1fr)",
+          base: "repeat(1, 1fr)",
           lg: "1fr",
         }}
         gap={{ base: "20px", xl: "20px" }}>
         <Banner
           gridArea='1 / 1 / 4 / 4'
           banner={banner}
-          avatar={avatar}
-          name='Adela Parkson'
-          job='Product Designer'
-          posts='17'
-          followers='9.7k'
-          following='274'
+          name={userData.first_name + " " + userData.last_name}
         />
-        {/* <Storage
-          gridArea={{ base: "2 / 1 / 3 / 2", lg: "1 / 2 / 2 / 3" }}
-          used={25.6}
-          total={50}
-        />
-        <Upload
-          gridArea={{
-            base: "3 / 1 / 4 / 2",
-            lg: "1 / 3 / 2 / 4",
-          }}
-          minH={{ base: "auto", lg: "420px", "2xl": "365px" }}
-          pe='20px'
-          pb={{ base: "100px", lg: "20px" }}
-        /> */}
       </Grid>
       <Grid
         mb='20px'
+        templateRows={{
+          base: "1fr",
+          lg: "repeat(1, 1fr)",
+          "2xl": "1fr",
+        }}
         templateColumns={{
           base: "1fr",
           lg: "repeat(2, 1fr)",
           "2xl": "1.34fr 1.62fr 1fr",
         }}
-        templateRows={{
-          base: "1fr",
-          lg: "repeat(2, 1fr)",
-          "2xl": "1fr",
-        }}
         gap={{ base: "20px", xl: "20px" }}>
-        <Projects
+        <Tickets
           gridArea='1 / 2 / 2 / 2'
           banner={banner}
-          avatar={avatar}
-          name='Adela Parkson'
-          job='Product Designer'
-          posts='17'
-          followers='9.7k'
-          following='274'
+          allTickets={allTickets}
         />
-        <General
-          gridArea={{ base: "2 / 1 / 3 / 2", lg: "1 / 2 / 2 / 3" }}
-          minH='365px'
-          pe='20px'
+        <Transactions
+          gridArea='1 / 2 / 2 / 2'
+          banner={banner}
+          allTransactions={allTransactions}
         />
-        {/* <Notifications
-          used={25.6}
-          total={50}
-          gridArea={{
-            base: "3 / 1 / 4 / 2",
-            lg: "2 / 1 / 3 / 3",
-            "2xl": "1 / 3 / 2 / 4",
-          }}
-        /> */}
       </Grid>
     </Box>
   );
