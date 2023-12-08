@@ -1,13 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 // Chakra imports
 import { Button, Flex, Link, Text } from "@chakra-ui/react";
 
 // Assets
 import banner from "assets/img/nfts/NftBanner1.png";
+import axios from 'axios'
+
+const API_ENDPOINT = 'http://localhost:8080';
 
 export default function Banner() {
-  // Chakra Color Mode
+  const [apiData, setApiData] = useState(null);
+
+  useEffect(async () => {
+    await axios.get(`${API_ENDPOINT}/ad/get`)
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+  }, [])
+
   return (
     <Flex
       direction='column'
@@ -30,7 +44,7 @@ export default function Banner() {
         }}
         fontWeight='700'
         lineHeight={{ base: "32px", md: "42px" }}>
-        Explore, Enjoy, & Find your Fit
+        
       </Text>
       <Text
         fontSize='md'
@@ -46,8 +60,7 @@ export default function Banner() {
         fontWeight='500'
         mb='40px'
         lineHeight='28px'>
-        Enter in this creative world. Explore now the latest Events 
-        you like to be part of!
+        
       </Text>
       <Flex align='center'>
         <Button
@@ -65,7 +78,7 @@ export default function Banner() {
         </Button>
         <Link>
           <Text color='white' fontSize='sm' fontWeight='500'>
-            Watch video
+            
           </Text>
         </Link>
       </Flex>

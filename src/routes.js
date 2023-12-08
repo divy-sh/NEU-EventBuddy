@@ -26,7 +26,10 @@ const userLoggedData = JSON.parse(sessionStorage.getItem("userLoggedData")) || {
 console.log("herhe", userLoggedData);
 var routes = [];
 
-if(userLoggedData.is_organizer == false) {
+if(userLoggedData == null) {
+  routes = [
+  ]
+}else if(userLoggedData.is_organizer == false) {
 routes = [
   {
     name: "Events",
