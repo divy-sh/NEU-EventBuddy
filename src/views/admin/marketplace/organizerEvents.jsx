@@ -59,7 +59,7 @@ export default function OrganizerEvents() {
   const headerGroups = ["Name", "Description", "Start Time", "End Time", "Last Registration Time", "Actions"]
 
   useEffect(async () => {
-    await axios.get(`${API_ENDPOINT}/event/get/all`)
+    await axios.get(`${API_ENDPOINT}/event/get/all?status=approved`)
         .then(function (response) {
           console.log(response);
           if(response.status == 200) {

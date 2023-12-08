@@ -58,7 +58,6 @@ function SignUp() {
               text: "You clicked the button!",
               icon: "success"
             });
-            console.log(history)
             history.push('/admin/sign-in')
           }
         })

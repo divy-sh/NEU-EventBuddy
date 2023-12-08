@@ -45,7 +45,7 @@ export default function Marketplace() {
   // const navigate = useNavigate();
 
   useEffect(async () => {
-    await axios.get(`${API_ENDPOINT}/event/get/all/approved`)
+    await axios.get(`${API_ENDPOINT}/event/get/all?status=approved`)
         .then(function (response) {
           console.log(response);
           if(response.status == 200) {

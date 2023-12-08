@@ -10,6 +10,7 @@ import theme from 'theme/theme';
 import store from "./store";
 import { Provider } from 'redux';
 import { ThemeEditorProvider } from '@hypertheme-editor/chakra-ui';
+import PrivateRoute from 'privateRoute';
 
 ReactDOM.render(
 	// <Provider store={store}>
@@ -19,7 +20,7 @@ ReactDOM.render(
 				<HashRouter>
 					<Switch>
 						<Route path={`/auth`} component={AuthLayout} />
-						<Route path={`/admin`} component={AdminLayout} />
+						<PrivateRoute path={`/admin`} component={AdminLayout} />
 						<Route path={`/rtl`} component={RtlLayout} />
 						<Redirect from='/' to='/admin' />
 					</Switch>
