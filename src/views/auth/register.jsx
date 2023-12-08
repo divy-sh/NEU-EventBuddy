@@ -51,18 +51,25 @@ function SignUp() {
         "is_organizer" : true
       })
         .then(function (response) {
-          console.log(response);
+          // console.log(response);
           if(response.status == 200) {
             Swal.fire({
-              title: "Good job!",
-              text: "You clicked the button!",
-              icon: "success"
+              title: "Welcome User!",
+              text: "You are Registered ",
+              icon: "success",
+              confirmButtonText: "Lets Sign In!"
             });
             history.push('/admin/sign-in')
           }
         })
         .catch(function (error) {
-          console.log(error);
+          // console.log(error);
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: error,
+            confirmButtonText: "Try Again!"
+          });
         });
   }
 

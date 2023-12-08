@@ -106,21 +106,27 @@ export default function OrganizerEvents() {
       "capacity": editEvent.capacity,
       "last_registration_date" : editEvent.last_registration_date,
       "org_id" : 1
-    }, headers=creationHeader)
+    })
       .then(function (response) {
-        console.log(response);
+        // console.log(response);
         if(response.status == 200) {
           Swal.fire({
-            title: "Good job!",
-            text: "You clicked the button!",
+            title: "Event Created Successfully!",
+            text: "Your event has been sent for Admin approval",
             icon: "success"
           });
-          console.log(history)
-          history.push('/admin/sign-in')
+          // console.log(history)
+          // history.push('/admin/all-event')
         }
       })
       .catch(function (error) {
-        console.log(error);
+        // .log(error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something Went Wrong",
+          confirmButtonText: "Try Again!"
+        });
       });
   }
 
@@ -164,11 +170,11 @@ export default function OrganizerEvents() {
             overflowX={{ sm: "scroll", lg: "hidden" }}>
             <Flex px='25px' justify='space-between' mb='20px' align='center'>
               <Text
-                color={textColor}
-                fontSize='22px'
+                color={"red"}
+                fontSize='15px'
                 fontWeight='700'
                 lineHeight='100%'>
-                Events Table
+                All approved events of the orgranisation will be seen here. Do check before deleting the event.
               </Text>
               <Menu />
             </Flex>
@@ -286,14 +292,14 @@ export default function OrganizerEvents() {
               </Tbody>
             </Table>
           </Card>
-          <Text
+          {/* <Text
             color={textColorPrimary}
             fontWeight='bold'
             fontSize='2xl'
             mt='20px'
             mb='4px'>
             Update Event
-          </Text>
+          </Text> */}
           <>
           <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
@@ -370,7 +376,7 @@ export default function OrganizerEvents() {
                     fontSize='sm'
                     ms={{ base: "0px", md: "0px" }}
                     type='datetime-local'
-                    name = 'end_time'
+                    name = 'last_registration_date'
                     onChange={handleChange}
                     defaultValue={editEvent.last_registration_date || null}
                     mb='24px'
