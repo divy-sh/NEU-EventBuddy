@@ -34,7 +34,7 @@ import Card from "components/card/Card.js";
 import Swal from 'sweetalert2'
 import axios from 'axios'
 
-export default function OrganizerEvents() {
+export default function AdminEvents() {
   // Chakra Color Mode
   const textColor = useColorModeValue("secondaryGray.900", "white");
   const textColorBrand = useColorModeValue("brand.500", "white");
@@ -43,6 +43,7 @@ export default function OrganizerEvents() {
 
   const API_ENDPOINT = 'http://localhost:8080';
   const [allEvents, setAllEvents] = useState([]);
+  const [userEmail, setUserEmail] = useState("");
   const history = useHistory();
 
   const brandStars = useColorModeValue("brand.500", "brand.400");
@@ -64,7 +65,10 @@ export default function OrganizerEvents() {
   const headerGroups = ["Name", "Description", "Start Time", "End Time", "Last Registration Time", "Capacity", "Entry Fees", "Actions"]
 
   useEffect(async () => {
-    await axios.get(`${API_ENDPOINT}/event/get/all?status=approved`)
+    const userData = JSON.parse(sessionStorage.getItem("userLoggedData"));
+    console.log("Admin Email", userData.email_id)
+    setUserEmail(userData.email_id)
+    await axios.get(`${API_ENDPOINT}/event/get/all`)
         .then(function (response) {
           console.log(response);
           if(response.status == 200) {
@@ -76,6 +80,36 @@ export default function OrganizerEvents() {
           console.log(error);
         });
   }, [])
+
+  const approveEvent = (async (event_id) => {
+    await axios.get(`${API_ENDPOINT}/admin/approve/event?email=${userEmail}&event_id=${event_id}&status=APPROVED'`)
+        .then(function (response) {
+          console.log(response);
+          if(response.status == 200) {
+            // sessionStorage.setItem("", JSON.stringify(response.data.user))
+            setAllEvents(response.data);
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+  })
+
+  const rejectEvent = (async (event_id) => {
+    await axios.get(`${API_ENDPOINT}/admin/approve/event?email=${userEmail}&event_id=${event_id}&status=REJECTED'`)
+        .then(function (response) {
+          console.log(response);
+          if(response.status == 200) {
+            // sessionStorage.setItem("", JSON.stringify(response.data.user))
+            setAllEvents(response.data);
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+  })
+
+  
 
   const handleSubmit = async (e) => {
   

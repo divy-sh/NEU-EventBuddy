@@ -7,6 +7,7 @@ import {
   MdHome,
   MdLock,
   MdOutlineShoppingCart,
+  MdChatBubble,
 } from "react-icons/md";
 
 // Admin Imports
@@ -14,9 +15,9 @@ import MainDashboard from "views/admin/default";
 import NFTMarketplace from "views/admin/marketplace";
 import Profile from "views/admin/profile";
 import DataTables from "views/admin/dataTables";
-import RTL from "views/admin/rtl";
 import EventDisplay from "views/admin/marketplace/event";
 import OrganizerEvents from "views/admin/marketplace/organizerEvents";
+import AdminEvents from "views/admin/marketplace/adminEvents";
 
 // Auth Imports
 import SignInCentered from "views/auth/signIn";
@@ -25,6 +26,7 @@ var routes = [];
 
 const UpdateRoutes = () => {
   const userLoggedData = JSON.parse(sessionStorage.getItem("userLoggedData"));
+  // console.log("userLogged Data - Routes", userLoggedData);
   if(userLoggedData === null) {
     routes = [
     {
@@ -124,13 +126,13 @@ const UpdateRoutes = () => {
           component: NFTMarketplace,
           secondary: true,
         },
-        // {
-        //   name: 'All Events',
-        //   layout: "/admin",
-        //   path: "/all-events",
-        //   icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
-        //   component: OrganizerEvents,
-        // },
+        {
+          name: 'Event Review',
+          layout: "/admin",
+          path: "/review-events",
+          icon: <Icon as={MdChatBubble} width='20px' height='20px' color='inherit' />,
+          component: AdminEvents,
+        },
       ])
     }
   }
