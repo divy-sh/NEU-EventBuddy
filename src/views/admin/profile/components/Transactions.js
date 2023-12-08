@@ -25,7 +25,7 @@ export default function Tickets(props) {
         fontSize='2xl'
         mt='10px'
         mb='4px'>
-        All Tickets
+        All Transactions
       </Text>
       <Text color={textColorSecondary} fontSize='md' me='26px' mb='40px'>
         Here you can find all of your purchased tickets, for previous, as well as upcoming events.
