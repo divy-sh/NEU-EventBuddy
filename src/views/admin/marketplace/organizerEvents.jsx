@@ -50,12 +50,15 @@ export default function OrganizerEvents() {
   const API_ENDPOINT = 'http://localhost:8080';
   const [allEvents, setAllEvents] = useState([]);
   const [unapprovedEvents, setUnapprovedEvents] = useState([]);
+  const [rejectedEvents, setRejectedEvents] = useState([]);
   const history = useHistory();
   
-  const [seleEvent, setSelectedEvent] = useState({});
+  const [isUpdateCheck, setIsUpdateCheck] = useState(false);
+  
 
   const brandStars = useColorModeValue("brand.500", "brand.400");
   const [editEvent, setEditEvent] = useState({
+    event_id: 0,
     event_name: '',
     event_description: '',
     start_time: '',
@@ -66,6 +69,7 @@ export default function OrganizerEvents() {
   });
   const handleChange = (e) => {
     // Update the form data as the user types
+    console.log(editEvent)
     setEditEvent({ ...editEvent, [e.target.name]: e.target.value });
   };
   const [capacity, setCapacity] = useState(1);
@@ -96,6 +100,18 @@ export default function OrganizerEvents() {
       .catch(function (error) {
         console.log(error);
     });
+    
+    await axios.get(`${API_ENDPOINT}/event/get/all?status=rejected`)
+      .then(function (response) {
+        console.log(response);
+        if(response.status == 200) {
+          // sessionStorage.setItem("", JSON.stringify(response.data.user))
+          setRejectedEvents(response.data);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+    });
   }, [])
 
   const handleSubmit = async (e) => {
@@ -105,27 +121,28 @@ export default function OrganizerEvents() {
     const {eventName, eventDescrp, start_time, end_time, last_registration_date } = e.target;
 
     console.log(editEvent);
+    console.log(isUpdateCheck)
 
-    const creationHeader = {'content-type':'application/json'}
-    
-    // Pass to API
-    await axios.post(`${API_ENDPOINT}/event/create`,
-     {
-      "event_name": editEvent.event_name,
-      "event_description": editEvent.event_description,
-      "start_time" : editEvent.start_time,
-      "end_time" : editEvent.end_time,
-      "entry_fees": editEvent.entry_fees,
-      "capacity": editEvent.capacity,
-      "last_registration_date" : editEvent.last_registration_date,
-      "org_id" : 1
-    })
+    if(isUpdateCheck) {
+      await axios.post(`${API_ENDPOINT}/event/update`,
+      {
+        "event_id": editEvent.event_id,
+        "event_name": editEvent.event_name,
+        "event_description": editEvent.event_description,
+        "start_time" : editEvent.start_time,
+        "end_time" : editEvent.end_time,
+        "entry_fees": editEvent.entry_fees,
+        "capacity": editEvent.capacity,
+        "last_registration_date" : editEvent.last_registration_date,
+        "org_id" : 1
+      })
       .then(function (response) {
         // console.log(response);
         if(response.status == 200) {
+          onClose();
           Swal.fire({
-            title: "Event Created Successfully!",
-            text: "Your event has been sent for Admin approval",
+            title: "Event Update Successfully!",
+            text: "Your event has updated successfully",
             icon: "success"
           });
           // console.log(history)
@@ -141,6 +158,41 @@ export default function OrganizerEvents() {
           confirmButtonText: "Try Again!"
         });
       });
+    }
+    else{
+    // Pass to API
+      await axios.post(`${API_ENDPOINT}/event/create`,
+      {
+        "event_name": editEvent.event_name,
+        "event_description": editEvent.event_description,
+        "start_time" : editEvent.start_time,
+        "end_time" : editEvent.end_time,
+        "entry_fees": editEvent.entry_fees,
+        "capacity": editEvent.capacity,
+        "last_registration_date" : editEvent.last_registration_date,
+        "org_id" : 1
+      })
+      .then(function (response) {
+        // console.log(response);
+        if(response.status == 200) {
+          Swal.fire({
+            title: "Event Created Successfully!",
+            text: "Your event has been sent for Admin approval",
+            icon: "success"
+          });
+          // history.push('/admin/all-event')
+        }
+      })
+      .catch(function (error) {
+        // .log(error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something Went Wrong",
+          confirmButtonText: "Try Again!"
+        });
+      });
+    }
   }
 
   return (
@@ -160,7 +212,7 @@ export default function OrganizerEvents() {
           All Events
         </Text>
         <Button
-          onClick={() => {setEditEvent({}); onOpen()}}
+          onClick={() => {setIsUpdateCheck(false); setEditEvent({}); onOpen()}}
           variant='darkBrand'
           color='white'
           fontSize='xl'
@@ -183,11 +235,11 @@ export default function OrganizerEvents() {
             overflowX={{ sm: "scroll", lg: "hidden" }}>
             <Flex px='25px' justify='space-between' mb='20px' align='center'>
               <Text
-                color={"red"}
-                fontSize='15px'
+                color={"green"}
+                fontSize='20px'
                 fontWeight='700'
                 lineHeight='100%'>
-                All approved events of the orgranisation will be seen here. Do check before deleting the event.
+                Approved Events
               </Text>
               <Menu />
             </Flex>
@@ -285,11 +337,15 @@ export default function OrganizerEvents() {
                       </Td>  
                       <Td>
                       <Flex pl='25px' pr='25px' justify='space-between' mb='10px' align='center'>
-                        <Button onClick={()=> { setEditEvent({
+                        <Button onClick={()=> { setIsUpdateCheck(true);
+                          setEditEvent({
+                          event_id: tData.event_id,
                           event_name: tData.event_name,
                           event_description: tData.event_description,
                           start_time: tData.start_time,
                           end_time: tData.end_time,
+                          capacity: tData.capacity,
+                          entry_fees: tData.entry_fees,
                           last_registration_date: tData.last_registration_date,
                           }); onOpen()}}>
                           <Icon as={MdModeEdit} width='20px' height='20px' color='inherit' /> 
@@ -401,7 +457,8 @@ export default function OrganizerEvents() {
                       w='100%'
                       h='50'
                       mb='24px'>
-                      Update Event
+                      {isUpdateCheck ? "Update Event": "Create Event"}
+                      
                     </Button>
                   </Flex>
                 </FormControl>
@@ -419,7 +476,7 @@ export default function OrganizerEvents() {
         </SimpleGrid>
       </Box>
 
-      {/* Unapprove Table */}
+      {/* In-Progress Table */}
       <Box p={{ base: "10px", md: "40px", xl: "40px" }}>
           <SimpleGrid
           mb='20px'
@@ -432,11 +489,11 @@ export default function OrganizerEvents() {
             overflowX={{ sm: "scroll", lg: "hidden" }}>
             <Flex px='25px' justify='space-between' mb='20px' align='center'>
               <Text
-                color={"red"}
-                fontSize='15px'
+                color={"Orange"}
+                fontSize='20px'
                 fontWeight='700'
                 lineHeight='100%'>
-                All unapproved events of the orgranisation will be seen here. Do check before deleting the event.
+                In-Progress Events
               </Text>
               <Menu />
             </Flex>
@@ -534,11 +591,154 @@ export default function OrganizerEvents() {
                       </Td>  
                       <Td>
                       <Flex pl='25px' pr='25px' justify='space-between' mb='10px' align='center'>
-                        <Button onClick={()=> { setEditEvent({
+                        <Button onClick={()=> { setIsUpdateCheck(true);
+                          setEditEvent({
+                          event_id: tData.event_id,
                           event_name: tData.event_name,
                           event_description: tData.event_description,
                           start_time: tData.start_time,
                           end_time: tData.end_time,
+                          capacity: tData.capacity,
+                          entry_fees: tData.entry_fees,
+                          last_registration_date: tData.last_registration_date,
+                          }); onOpen()}}>
+                          <Icon as={MdModeEdit} width='20px' height='20px' color='inherit' /> 
+                        </Button>
+                      </Flex>
+                      </Td>     
+                  </Tr>
+                  )
+                })}
+              </Tbody>
+            </Table>
+          </Card>
+        </SimpleGrid>
+      </Box>
+
+      {/* Rejected Table */}
+      <Box p={{ base: "10px", md: "40px", xl: "40px" }}>
+          <SimpleGrid
+          mb='20px'
+          columns={{ sm: 1, md: 1 }}
+          spacing={{ base: "20px", xl: "20px" }}>
+          <Card
+            direction='column'
+            w='100%'
+            px='0px'
+            overflowX={{ sm: "scroll", lg: "hidden" }}>
+            <Flex px='25px' justify='space-between' mb='20px' align='center'>
+              <Text
+                color={"red"}
+                fontSize='20px'
+                fontWeight='700'
+                lineHeight='100%'>
+                Rejected Events
+              </Text>
+              <Menu />
+            </Flex>
+            <Table variant='simple' color='gray.500' mb='24px'>
+              <Thead>
+                  <Tr key="headers">
+                  {headerGroups.map((headerGroup) => (
+                    <Th
+                      pe='10px'
+                      borderColor={borderColor}>
+                      <Flex
+                        justify='space-between'
+                        align='center'
+                        fontSize={{ sm: "10px", lg: "12px" }}
+                        color='gray.400'>
+                        {headerGroup}
+                      </Flex>
+                    </Th>
+                    ))}
+                  </Tr>
+              </Thead>
+              <Tbody>
+                {rejectedEvents.map((tData, index) => {
+                  return (
+                    <Tr key={index}>
+                      <Td
+                        fontSize={{ sm: "14px" }}
+                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                        borderColor='transparent'>
+                        <Flex align='center'>
+                          <Text color={textColor} fontSize='sm' fontWeight='700'>
+                            {tData.event_name}
+                          </Text>
+                        </Flex>
+                      </Td> 
+                      <Td
+                        fontSize={{ sm: "14px" }}
+                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                        borderColor='transparent'>
+                        <Flex align='center'>
+                          <Text color={textColor} fontSize='sm' fontWeight='700'>
+                            {tData.event_description}
+                          </Text>
+                        </Flex>
+                      </Td> 
+                      <Td
+                        fontSize={{ sm: "14px" }}
+                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                        borderColor='transparent'>
+                        <Flex align='center'>
+                          <Text color={textColor} fontSize='sm' fontWeight='700'>
+                            {tData.start_time}
+                          </Text>
+                        </Flex>
+                      </Td> 
+                      <Td
+                        fontSize={{ sm: "14px" }}
+                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                        borderColor='transparent'>
+                        <Flex align='center'>
+                          <Text color={textColor} fontSize='sm' fontWeight='700'>
+                            {tData.end_time}
+                          </Text>
+                        </Flex>
+                      </Td> 
+                      <Td
+                        fontSize={{ sm: "14px" }}
+                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                        borderColor='transparent'>
+                        <Flex align='center'>
+                          <Text color={textColor} fontSize='sm' fontWeight='700'>
+                            {tData.last_registration_date}
+                          </Text>
+                        </Flex>
+                      </Td>
+                      <Td
+                        fontSize={{ sm: "14px" }}
+                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                        borderColor='transparent'>
+                        <Flex align='center'>
+                          <Text color={textColor} fontSize='sm' fontWeight='700'>
+                            {tData.capacity}
+                          </Text>
+                        </Flex>
+                      </Td> 
+                      <Td
+                        fontSize={{ sm: "14px" }}
+                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                        borderColor='transparent'>
+                        <Flex align='center'>
+                          <Text color={textColor} fontSize='sm' fontWeight='700'>
+                            {tData.entry_fees}
+                          </Text>
+                        </Flex>
+                      </Td>  
+                      <Td>
+                      <Flex pl='25px' pr='25px' justify='space-between' mb='10px' align='center'>
+                        <Button onClick={()=> { setIsUpdateCheck(true);
+                          setEditEvent({
+                          event_id: tData.event_id,
+                          event_name: tData.event_name,
+                          event_description: tData.event_description,
+                          start_time: tData.start_time,
+                          end_time: tData.end_time,
+                          capacity: tData.capacity,
+                          entry_fees: tData.entry_fees,
                           last_registration_date: tData.last_registration_date,
                           }); onOpen()}}>
                           <Icon as={MdModeEdit} width='20px' height='20px' color='inherit' /> 

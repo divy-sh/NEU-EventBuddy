@@ -22,7 +22,7 @@ import Tickets from "views/admin/profile/components/Tickets";
 import Transactions from "views/admin/profile/components/Transactions";
 import { UpdateRoutes } from 'routes';
 import { useHistory } from 'react-router-dom';
-
+import Swal from "sweetalert2";
 
 
 // Assets
@@ -41,13 +41,24 @@ export default function Overview() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const DeleteAccount = async () => {
     try {
-      const response = await axios.delete(`${API_ENDPOINT}/user/delete?email_id=${userData.email_id}`);
-      console.log(response)
-      if (response.status === 200) {  
-        sessionStorage.removeItem('userLoggedData');
-        UpdateRoutes();
-        history.push('/auth/signin');
-      }
+      Swal.fire({
+        title: "Are you sure you want to Delete your account?",
+        showDenyButton: true,
+        confirmButtonText: "Delete",
+        denyButtonText: `Cancel`
+      }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          const response = axios.delete(`${API_ENDPOINT}/user/delete?email_id=${userData.email_id}`);
+          console.log(response)
+          if (response.status === 200) {  
+            sessionStorage.removeItem('userLoggedData');
+            UpdateRoutes();
+            history.push('/auth/signin');
+          }
+        }
+      });
+      
     } catch (error) {
       console.error(error);
     }

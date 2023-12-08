@@ -28,7 +28,7 @@ import {
 } from "@chakra-ui/react";
 
 import { Icon } from "@chakra-ui/react";
-import { MdModeEdit, MdDelete} from "react-icons/md";
+import { MdModeEdit, MdClose, MdCheckCircle} from "react-icons/md";
 
 import Card from "components/card/Card.js";
 import Swal from 'sweetalert2'
@@ -43,11 +43,13 @@ export default function AdminEvents() {
 
   const API_ENDPOINT = 'http://localhost:8080';
   const [allEvents, setAllEvents] = useState([]);
+  const [approvedEvents, setApprovedEvents] = useState([]);
   const [userEmail, setUserEmail] = useState("");
   const history = useHistory();
 
   const brandStars = useColorModeValue("brand.500", "brand.400");
   const [editEvent, setEditEvent] = useState({
+    event_id:0,
     event_name: '',
     event_description: '',
     start_time: '',
@@ -68,7 +70,7 @@ export default function AdminEvents() {
     const userData = JSON.parse(sessionStorage.getItem("userLoggedData"));
     console.log("Admin Email", userData.email_id)
     setUserEmail(userData.email_id)
-    await axios.get(`${API_ENDPOINT}/event/get/all`)
+    await axios.get(`${API_ENDPOINT}/event/get/all?status=in-progress`)
         .then(function (response) {
           console.log(response);
           if(response.status == 200) {
@@ -79,15 +81,34 @@ export default function AdminEvents() {
         .catch(function (error) {
           console.log(error);
         });
+    
+    await axios.get(`${API_ENDPOINT}/event/get/all?status=approved`)
+    .then(function (response) {
+      console.log(response);
+      if(response.status == 200) {
+        // sessionStorage.setItem("", JSON.stringify(response.data.user))
+        setApprovedEvents(response.data);
+      }
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
   }, [])
 
   const approveEvent = (async (event_id) => {
-    await axios.get(`${API_ENDPOINT}/admin/approve/event?email=${userEmail}&event_id=${event_id}&status=APPROVED'`)
+    await axios.get(`${API_ENDPOINT}/admin/approve/event?email=${userEmail}&event_id=${event_id}&status=APPROVED`)
         .then(function (response) {
           console.log(response);
           if(response.status == 200) {
             // sessionStorage.setItem("", JSON.stringify(response.data.user))
-            setAllEvents(response.data);
+            console.log(response.data)
+            Swal.fire({
+              position: "top-end",
+              icon: "success",
+              title: "Event Approved!",
+              showConfirmButton: false,
+              timer: 1000
+            });
           }
         })
         .catch(function (error) {
@@ -96,65 +117,29 @@ export default function AdminEvents() {
   })
 
   const rejectEvent = (async (event_id) => {
-    await axios.get(`${API_ENDPOINT}/admin/approve/event?email=${userEmail}&event_id=${event_id}&status=REJECTED'`)
+    await axios.get(`${API_ENDPOINT}/admin/approve/event?email=${userEmail}&event_id=${event_id}&status=REJECTED`)
         .then(function (response) {
           console.log(response);
           if(response.status == 200) {
             // sessionStorage.setItem("", JSON.stringify(response.data.user))
-            setAllEvents(response.data);
+            // Swal.fire({
+            //   title: "Event Rejected!",
+            //   icon: "success"
+            // });
+            console.log(response.data)
+            Swal.fire({
+              position: "top-end",
+              icon: "success",
+              title: "Event Rejected!",
+              showConfirmButton: false,
+              timer: 1000
+            });
           }
         })
         .catch(function (error) {
           console.log(error);
         });
   })
-
-  
-
-  const handleSubmit = async (e) => {
-  
-    e.preventDefault();
-
-    const {eventName, eventDescrp, start_time, end_time, last_registration_date } = e.target;
-
-    console.log(editEvent);
-
-    const creationHeader = {'content-type':'application/json'}
-    
-    // Pass to API
-    await axios.post(`${API_ENDPOINT}/event/create`,
-     {
-      "event_name": editEvent.event_name,
-      "event_description": editEvent.event_description,
-      "start_time" : editEvent.start_time,
-      "end_time" : editEvent.end_time,
-      "entry_fees": editEvent.entry_fees,
-      "capacity": editEvent.capacity,
-      "last_registration_date" : editEvent.last_registration_date,
-      "org_id" : 1
-    })
-      .then(function (response) {
-        // console.log(response);
-        if(response.status == 200) {
-          Swal.fire({
-            title: "Event Created Successfully!",
-            text: "Your event has been sent for Admin approval",
-            icon: "success"
-          });
-          // console.log(history)
-          // history.push('/admin/all-event')
-        }
-      })
-      .catch(function (error) {
-        // .log(error);
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Something Went Wrong",
-          confirmButtonText: "Try Again!"
-        });
-      });
-  }
 
   return (
     <Card
@@ -194,13 +179,13 @@ export default function AdminEvents() {
             w='100%'
             px='0px'
             overflowX={{ sm: "scroll", lg: "hidden" }}>
-            <Flex px='25px' justify='space-between' mb='20px' align='center'>
+            <Flex px='25px' justify='space-between' mb='10px' align='center'>
               <Text
                 color={"red"}
                 fontSize='15px'
                 fontWeight='700'
                 lineHeight='100%'>
-                All approved events of the orgranisation will be seen here. Do check before deleting the event.
+                
               </Text>
               <Menu />
             </Flex>
@@ -299,16 +284,28 @@ export default function AdminEvents() {
                       <Td>
                       <Flex pl='25px' pr='25px' justify='space-between' mb='10px' align='center'>
                         <Button onClick={()=> { setEditEvent({
+                          event_id: tData.event_id,
                           event_name: tData.event_name,
                           event_description: tData.event_description,
                           start_time: tData.start_time,
                           end_time: tData.end_time,
+                          capacity: tData.capacity,
+                          entry_fees: tData.entry_fees,
                           last_registration_date: tData.last_registration_date,
-                          }); onOpen()}}>
-                          <Icon as={MdModeEdit} width='20px' height='20px' color='inherit' /> 
+                          }); approveEvent(tData.event_id) }}>
+                          <Icon color={"green.500"} as={MdCheckCircle} width='20px' height='20px'/> 
                         </Button>
-                        <Button onClick={()=> { setEditEvent(tData);}}>
-                          <Icon as={MdDelete} width='20px' height='20px' color='inherit' /> 
+                        <Button onClick={()=> { setEditEvent({
+                          event_id: tData.event_id,
+                          event_name: tData.event_name,
+                          event_description: tData.event_description,
+                          start_time: tData.start_time,
+                          end_time: tData.end_time,
+                          capacity: tData.capacity,
+                          entry_fees: tData.entry_fees,
+                          last_registration_date: tData.last_registration_date,
+                          }); rejectEvent(tData.event_id)}}>
+                          <Icon as={MdClose} width='20px' height='20px' color={"red.500"} /> 
                         </Button>
                       </Flex>
                       </Td>     
@@ -326,112 +323,135 @@ export default function AdminEvents() {
             mb='4px'>
             Update Event
           </Text> */}
-          <>
-          <Modal isOpen={isOpen} onClose={onClose}>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Event Details</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-              <form onSubmit={handleSubmit} style={{'padding':'20px'}}>
-                <FormControl>
-                  {/* First Name  */}
-                <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
-                    Event Name
-                  </FormLabel>
-                  <Input variant='auth' name="event_name" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='text' 
-                  placeholder='Enter Event Name' mb='24px' onChange={handleChange} defaultValue={editEvent.event_name || ""} fontWeight='500' size='lg'
-                  />
-                  <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
-                    Event Description
-                  </FormLabel>
-                  <Input variant='auth' name="event_description" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='textarea' 
-                  placeholder='Enter Event Description' onChange={handleChange} defaultValue={editEvent.event_description || ""} mb='24px' fontWeight='500' size='lg'
-                  />
-                  <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
-                    Start Time
-                  </FormLabel>
-                  <Input variant='auth' name="start_time" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='datetime-local' 
-                  mb='24px' onChange={handleChange} defaultValue={editEvent.start_time || ""} fontWeight='500' size='lg'
-                  />
-                  <FormLabel
-                    display='flex'
-                    ms='4px'
-                    fontSize='sm'
-                    fontWeight='500'
-                    color={textColor}
-                    mb='8px'>
-                    End Time<Text color={brandStars}>*</Text>
-                  </FormLabel>
-                  <Input
-                    isRequired={true}
-                    variant='auth'
-                    fontSize='sm'
-                    ms={{ base: "0px", md: "0px" }}
-                    type='datetime-local'
-                    name = 'end_time'
-                    onChange={handleChange}
-                    defaultValue={editEvent.end_time || null}
-                    mb='24px'
-                    fontWeight='500'
-                    size='lg'
-                  />
-                  <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
-                    Entry Fees
-                  </FormLabel>
-                  <Input variant='auth' name="entry_fees" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='number' 
-                  mb='24px' onChange={handleChange} defaultValue={editEvent.entry_fees || 0} fontWeight='500' size='lg'
-                  />
-                  <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
-                    Capacity
-                  </FormLabel>
-                  <Input variant='auth' name="capacity" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='number' 
-                  mb='24px' onChange={handleChange} defaultValue={editEvent.capacity || 0} fontWeight='500' size='lg'
-                  />
-                  <FormLabel
-                    ms='4px'
-                    fontSize='sm'
-                    fontWeight='500'
-                    color={textColor}
-                    display='flex'>
-                    Last Registration Date<Text color={brandStars}>*</Text>
-                  </FormLabel>
-                  <Input
-                    isRequired={true}
-                    variant='auth'
-                    fontSize='sm'
-                    ms={{ base: "0px", md: "0px" }}
-                    type='datetime-local'
-                    name = 'last_registration_date'
-                    onChange={handleChange}
-                    defaultValue={editEvent.last_registration_date || null}
-                    mb='24px'
-                    fontWeight='500'
-                    size='lg'
-                  />
-                  <Flex pl='25px' pr='25px' justify='space-between' mb='10px' align='center'>
-                    <Button type="submit"
-                      fontSize='sm'
-                      variant='brand'
-                      fontWeight='500'
-                      w='100%'
-                      h='50'
-                      mb='24px'>
-                      Update Event
-                    </Button>
-                  </Flex>
-                </FormControl>
-                </form>
-              </ModalBody>
-              {/* <ModalFooter>
-                <Button colorScheme='blue' mr={3} onClick={onClose}>
-                  Close
-                </Button>
-                <Button variant='ghost'>Secondary Action</Button>
-              </ModalFooter> */}
-            </ModalContent>
-          </Modal>
-          </>
+        </SimpleGrid>
+      </Box>
+
+      {/* Approved Table */}
+      <Box p={{ base: "10px", md: "40px", xl: "40px" }}>
+          <SimpleGrid
+          mb='20px'
+          columns={{ sm: 1, md: 1 }}
+          spacing={{ base: "10px", xl: "20px" }}>
+          <Card
+            direction='column'
+            w='100%'
+            px='0px'
+            overflowX={{ sm: "scroll", lg: "hidden" }}>
+            <Flex px='25px' justify='space-between' mb='5px' align='center'>
+              <Text
+                color={"Orange"}
+                fontSize='20px'
+                fontWeight='700'
+                lineHeight='100%'>
+                Approved Events
+              </Text>
+              <Menu />
+            </Flex>
+            <Table variant='simple' color='gray.500' mb='24px'>
+              <Thead>
+                  <Tr key="headers">
+                  {headerGroups.map((headerGroup) => (
+                    <Th
+                      pe='10px'
+                      borderColor={borderColor}>
+                      <Flex
+                        justify='space-between'
+                        align='center'
+                        fontSize={{ sm: "10px", lg: "12px" }}
+                        color='gray.400'>
+                        {headerGroup}
+                      </Flex>
+                    </Th>
+                    ))}
+                  </Tr>
+              </Thead>
+              <Tbody>
+                {approvedEvents.map((tData, index) => {
+                  return (
+                    <Tr key={index}>
+                      <Td
+                        fontSize={{ sm: "14px" }}
+                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                        borderColor='transparent'>
+                        <Flex align='center'>
+                          <Text color={textColor} fontSize='sm' fontWeight='700'>
+                            {tData.event_name}
+                          </Text>
+                        </Flex>
+                      </Td> 
+                      <Td
+                        fontSize={{ sm: "14px" }}
+                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                        borderColor='transparent'>
+                        <Flex align='center'>
+                          <Text color={textColor} fontSize='sm' fontWeight='700'>
+                            {tData.event_description}
+                          </Text>
+                        </Flex>
+                      </Td> 
+                      <Td
+                        fontSize={{ sm: "14px" }}
+                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                        borderColor='transparent'>
+                        <Flex align='center'>
+                          <Text color={textColor} fontSize='sm' fontWeight='700'>
+                            {tData.start_time}
+                          </Text>
+                        </Flex>
+                      </Td> 
+                      <Td
+                        fontSize={{ sm: "14px" }}
+                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                        borderColor='transparent'>
+                        <Flex align='center'>
+                          <Text color={textColor} fontSize='sm' fontWeight='700'>
+                            {tData.end_time}
+                          </Text>
+                        </Flex>
+                      </Td> 
+                      <Td
+                        fontSize={{ sm: "14px" }}
+                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                        borderColor='transparent'>
+                        <Flex align='center'>
+                          <Text color={textColor} fontSize='sm' fontWeight='700'>
+                            {tData.last_registration_date}
+                          </Text>
+                        </Flex>
+                      </Td>
+                      <Td
+                        fontSize={{ sm: "14px" }}
+                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                        borderColor='transparent'>
+                        <Flex align='center'>
+                          <Text color={textColor} fontSize='sm' fontWeight='700'>
+                            {tData.capacity}
+                          </Text>
+                        </Flex>
+                      </Td> 
+                      <Td
+                        fontSize={{ sm: "14px" }}
+                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                        borderColor='transparent'>
+                        <Flex align='center'>
+                          <Text color={textColor} fontSize='sm' fontWeight='700'>
+                            {tData.entry_fees}
+                          </Text>
+                        </Flex>
+                      </Td>  
+                      <Td>
+                      <Flex pl='25px' pr='25px' justify='space-between' mb='10px' align='center'>
+                        <Button>
+                        <Icon color={"green.500"} as={MdCheckCircle} width='20px' height='20px'/> 
+                        </Button>
+                      </Flex>
+                      </Td>     
+                  </Tr>
+                  )
+                })}
+              </Tbody>
+            </Table>
+          </Card>
         </SimpleGrid>
       </Box>
     </Card>
