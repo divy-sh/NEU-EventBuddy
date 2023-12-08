@@ -13,7 +13,7 @@ export default function Banner() {
   const [apiData, setApiData] = useState(null);
 
   useEffect(async () => {
-    await axios.get(`${API_ENDPOINT}/ad/get`)
+    await axios.get(`${API_ENDPOINT}/ad/get?status=approved`)
         .then(function (response) {
           console.log(response);
         })

@@ -6,9 +6,6 @@ import {
   Box,
   Button,
   Flex,
-  Grid,
-  Link,
-  Input,
   Text,
   useColorModeValue,
   SimpleGrid,
@@ -19,15 +16,6 @@ import Banner from "views/admin/marketplace/components/Banner";
 import Information from "views/admin/profile/components/Information";
 import Card from "components/card/Card.js";
 import Swal from 'sweetalert2'
-
-// Assets
-import Nft1 from "assets/img/nfts/Nft1.png";
-import Nft2 from "assets/img/nfts/Nft2.png";
-import Nft3 from "assets/img/nfts/Nft3.png";
-import Nft4 from "assets/img/nfts/Nft4.png";
-import Nft5 from "assets/img/nfts/Nft5.png";
-import Nft6 from "assets/img/nfts/Nft6.png";
-import routes from '../../../routes';
 
 export default function EventDisplay() {
   // Chakra Color Mode
@@ -49,6 +37,9 @@ export default function EventDisplay() {
   const [capacity, setCapacity] = useState(1);
   const addCapacityCart = () => {
     setCapacity(capacity + 1);
+  }
+  const subtractCapacityCart = () => {
+    setCapacity(Math.max(1, capacity - 1))
   }
 
   useEffect(() => {
@@ -131,22 +122,18 @@ export default function EventDisplay() {
       </Flex>
         <Box p={{ base: "10px", md: "40px", xl: "40px" }}>
         <Text color={textColorSecondary} fontSize='md' me='26px' mb='40px'>
-          As we live, our hearts turn colder. Cause pain is what we go through as
-          we become older. We get insulted by others, lose trust for those others.
-          We get back stabbed by friends. It becomes harder for us to give others
-          a hand. We get our heart broken by people we love, even that we give
-          them all...
+           {selectedEvent.event_description}
         </Text>
         <SimpleGrid columns='2' gap='20px'>
         <Information
           boxShadow={cardShadow}
           title='Start Time'
-          value={selectedEvent.start_time}
+          value={new Date(selectedEvent.start_time).toLocaleString('en-US', { timeZone: 'UTC' })}
         />
         <Information
           boxShadow={cardShadow}
           title='End Time'
-          value={selectedEvent.end_time}
+          value={new Date(selectedEvent.end_time).toLocaleString('en-US', { timeZone: 'UTC' })}
         />
         <Information
           boxShadow={cardShadow}
@@ -161,7 +148,7 @@ export default function EventDisplay() {
         <Information
           boxShadow={cardShadow}
           title='Last Registration Date'
-          value={selectedEvent.last_registration_date}
+          value={new Date(selectedEvent.last_registration_date).toLocaleString('en-US', { timeZone: 'UTC' })}
         />
         <Information
           boxShadow={cardShadow}
@@ -170,26 +157,28 @@ export default function EventDisplay() {
         />
       </SimpleGrid>
       <br/>
-      <Flex pl='25px' justify='space-between' mb='10px' align='center'>
+      <Flex pl='25px' pr='25px' justify='flex-end' mb='10px' align='center'>
       <Button
-        onClick={buyTickets}
+        onClick={subtractCapacityCart}
         variant='darkBrand'
         color='white'
-        fontSize='xl'
-        fontWeight='500'
+        fontSize=''
+        fontWeight='300'
         borderRadius='10px'
-        px='24px'
-        py='5px'>
-        Buy Tickets
+        px='10px'
+        py='5px'
+        m='10px'>
+        -
       </Button> 
       <Text
           color={textColorPrimary}
           fontWeight='bold'
           fontSize='2xl'
           mt='10px'
-          mb='4px'>
-          Your Tickets Count : {capacity}
-        </Text>
+          mb='4px'
+          m='10px'>
+          {capacity}
+      </Text>
       <Button
         onClick={addCapacityCart}
         variant='darkBrand'
@@ -198,19 +187,21 @@ export default function EventDisplay() {
         fontWeight='300'
         borderRadius='10px'
         px='20px'
-        py='5px'>
-        Add Ticket Count
-      </Button> 
+        py='5px'
+        m='10px'>
+        +
+      </Button>
       <Button
-        onClick={() => {setCapacity(1)}}
+        onClick={buyTickets}
         variant='darkBrand'
         color='white'
-        fontSize=''
-        fontWeight='300'
+        fontSize='xl'
+        fontWeight='500'
         borderRadius='10px'
-        px='10px'
-        py='5px'>
-        Reset
+        px='24px'
+        py='5px'
+        m='10px'>
+        Buy
       </Button> 
       </Flex>
       </Box>

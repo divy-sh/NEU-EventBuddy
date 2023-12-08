@@ -31,7 +31,7 @@ export default function Tickets(props) {
           <Transaction key={index}
             boxShadow={cardShadow}
             mb='20px'
-            transactionData={tData}
+            tData={tData}
           />
         )
       })}
