@@ -30,17 +30,11 @@ import {
 import { Icon } from "@chakra-ui/react";
 import { MdModeEdit, MdDelete} from "react-icons/md";
 
-// Custom components
-import DevelopmentTable from "views/admin/dataTables/components/DevelopmentTable";
-import {
-  columnsDataDevelopment,
-} from "views/admin/dataTables/variables/columnsData";
-import tableDataDevelopment from "views/admin/dataTables/variables/tableDataDevelopment.json";
 import Card from "components/card/Card.js";
 import Swal from 'sweetalert2'
 import axios from 'axios'
 
-export default function OrganizerEvents() {
+export default function AdminEvents() {
   // Chakra Color Mode
   const textColor = useColorModeValue("secondaryGray.900", "white");
   const textColorBrand = useColorModeValue("brand.500", "white");
@@ -49,10 +43,8 @@ export default function OrganizerEvents() {
 
   const API_ENDPOINT = 'http://localhost:8080';
   const [allEvents, setAllEvents] = useState([]);
-  const [unapprovedEvents, setUnapprovedEvents] = useState([]);
+  const [userEmail, setUserEmail] = useState("");
   const history = useHistory();
-  
-  const [seleEvent, setSelectedEvent] = useState({});
 
   const brandStars = useColorModeValue("brand.500", "brand.400");
   const [editEvent, setEditEvent] = useState({
@@ -73,7 +65,10 @@ export default function OrganizerEvents() {
   const headerGroups = ["Name", "Description", "Start Time", "End Time", "Last Registration Time", "Capacity", "Entry Fees", "Actions"]
 
   useEffect(async () => {
-    await axios.get(`${API_ENDPOINT}/event/get/all?status=approved`)
+    const userData = JSON.parse(sessionStorage.getItem("userLoggedData"));
+    console.log("Admin Email", userData.email_id)
+    setUserEmail(userData.email_id)
+    await axios.get(`${API_ENDPOINT}/event/get/all`)
         .then(function (response) {
           console.log(response);
           if(response.status == 200) {
@@ -84,19 +79,37 @@ export default function OrganizerEvents() {
         .catch(function (error) {
           console.log(error);
         });
-
-    await axios.get(`${API_ENDPOINT}/event/get/all?status=in-progress`)
-      .then(function (response) {
-        console.log(response);
-        if(response.status == 200) {
-          // sessionStorage.setItem("", JSON.stringify(response.data.user))
-          setUnapprovedEvents(response.data);
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-    });
   }, [])
+
+  const approveEvent = (async (event_id) => {
+    await axios.get(`${API_ENDPOINT}/admin/approve/event?email=${userEmail}&event_id=${event_id}&status=APPROVED'`)
+        .then(function (response) {
+          console.log(response);
+          if(response.status == 200) {
+            // sessionStorage.setItem("", JSON.stringify(response.data.user))
+            setAllEvents(response.data);
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+  })
+
+  const rejectEvent = (async (event_id) => {
+    await axios.get(`${API_ENDPOINT}/admin/approve/event?email=${userEmail}&event_id=${event_id}&status=REJECTED'`)
+        .then(function (response) {
+          console.log(response);
+          if(response.status == 200) {
+            // sessionStorage.setItem("", JSON.stringify(response.data.user))
+            setAllEvents(response.data);
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+  })
+
+  
 
   const handleSubmit = async (e) => {
   
@@ -419,144 +432,6 @@ export default function OrganizerEvents() {
             </ModalContent>
           </Modal>
           </>
-        </SimpleGrid>
-      </Box>
-
-      {/* Unapprove Table */}
-      <Box p={{ base: "10px", md: "40px", xl: "40px" }}>
-          <SimpleGrid
-          mb='20px'
-          columns={{ sm: 1, md: 1 }}
-          spacing={{ base: "20px", xl: "20px" }}>
-          <Card
-            direction='column'
-            w='100%'
-            px='0px'
-            overflowX={{ sm: "scroll", lg: "hidden" }}>
-            <Flex px='25px' justify='space-between' mb='20px' align='center'>
-              <Text
-                color={"red"}
-                fontSize='15px'
-                fontWeight='700'
-                lineHeight='100%'>
-                All unapproved events of the orgranisation will be seen here. Do check before deleting the event.
-              </Text>
-              <Menu />
-            </Flex>
-            <Table variant='simple' color='gray.500' mb='24px'>
-              <Thead>
-                  <Tr key="headers">
-                  {headerGroups.map((headerGroup) => (
-                    <Th
-                      pe='10px'
-                      borderColor={borderColor}>
-                      <Flex
-                        justify='space-between'
-                        align='center'
-                        fontSize={{ sm: "10px", lg: "12px" }}
-                        color='gray.400'>
-                        {headerGroup}
-                      </Flex>
-                    </Th>
-                    ))}
-                  </Tr>
-              </Thead>
-              <Tbody>
-                {unapprovedEvents.map((tData, index) => {
-                  return (
-                    <Tr key={index}>
-                      <Td
-                        fontSize={{ sm: "14px" }}
-                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
-                        borderColor='transparent'>
-                        <Flex align='center'>
-                          <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.event_name}
-                          </Text>
-                        </Flex>
-                      </Td> 
-                      <Td
-                        fontSize={{ sm: "14px" }}
-                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
-                        borderColor='transparent'>
-                        <Flex align='center'>
-                          <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.event_description}
-                          </Text>
-                        </Flex>
-                      </Td> 
-                      <Td
-                        fontSize={{ sm: "14px" }}
-                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
-                        borderColor='transparent'>
-                        <Flex align='center'>
-                          <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.start_time}
-                          </Text>
-                        </Flex>
-                      </Td> 
-                      <Td
-                        fontSize={{ sm: "14px" }}
-                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
-                        borderColor='transparent'>
-                        <Flex align='center'>
-                          <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.end_time}
-                          </Text>
-                        </Flex>
-                      </Td> 
-                      <Td
-                        fontSize={{ sm: "14px" }}
-                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
-                        borderColor='transparent'>
-                        <Flex align='center'>
-                          <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.last_registration_date}
-                          </Text>
-                        </Flex>
-                      </Td>
-                      <Td
-                        fontSize={{ sm: "14px" }}
-                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
-                        borderColor='transparent'>
-                        <Flex align='center'>
-                          <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.capacity}
-                          </Text>
-                        </Flex>
-                      </Td> 
-                      <Td
-                        fontSize={{ sm: "14px" }}
-                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
-                        borderColor='transparent'>
-                        <Flex align='center'>
-                          <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.entry_fees}
-                          </Text>
-                        </Flex>
-                      </Td>  
-                      <Td>
-                      <Flex pl='25px' pr='25px' justify='space-between' mb='10px' align='center'>
-                        <Button onClick={()=> { setEditEvent({
-                          event_name: tData.event_name,
-                          event_description: tData.event_description,
-                          start_time: tData.start_time,
-                          end_time: tData.end_time,
-                          last_registration_date: tData.last_registration_date,
-                          }); onOpen()}}>
-                          <Icon as={MdModeEdit} width='20px' height='20px' color='inherit' /> 
-                        </Button>
-                        <Button onClick={()=> { setEditEvent(tData);}}>
-                          <Icon as={MdDelete} width='20px' height='20px' color='inherit' /> 
-                        </Button>
-                      </Flex>
-                      </Td>     
-                  </Tr>
-                  )
-                })}
-              </Tbody>
-            </Table>
-          </Card>
         </SimpleGrid>
       </Box>
     </Card>
