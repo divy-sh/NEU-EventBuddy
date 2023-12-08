@@ -21,92 +21,12 @@ import OrganizerEvents from "views/admin/marketplace/organizerEvents";
 // Auth Imports
 import SignInCentered from "views/auth/signIn";
 import SignUp from "views/auth/register";
-
-const userLoggedData = JSON.parse(sessionStorage.getItem("userLoggedData")) || {'admin':false};
-console.log("herhe", userLoggedData);
 var routes = [];
 
-if(userLoggedData == null) {
-  routes = [
-  ]
-}else if(userLoggedData.is_organizer == false) {
-routes = [
-  {
-    name: "Events",
-    layout: "/admin",
-    path: "/events",
-    icon: (
-      <Icon
-        as={MdOutlineShoppingCart}
-        width='20px'
-        height='20px'
-        color='inherit'
-      />
-    ),
-    component: NFTMarketplace,
-    secondary: true,
-  },
-  {
-    name: "Data Tables",
-    layout: "/admin",
-    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
-    path: "/data-tables",
-    component: DataTables,
-  },
-  {
-    name: "Profile",
-    layout: "/admin",
-    path: "/profile",
-    icon: <Icon as={MdPerson} width='20px' height='20px' color='inherit' />,
-    component: Profile,
-  },
-  {
-    name: "Event Info",
-    layout: "/admin",
-    path: "/event-info",
-    icon: <Icon as={MdLock} width='20px' height='20px' color='inherit' />,
-    component: EventDisplay,
-  }
-];
-}
-else {
-  routes = [
-    {
-      name: "Main Dashboard",
-      layout: "/admin",
-      path: "/default",
-      icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
-      component: MainDashboard,
-    },
-    {
-      name: "NFT Marketplace",
-      layout: "/admin",
-      path: "/nft-marketplace",
-      icon: (
-        <Icon
-          as={MdOutlineShoppingCart}
-          width='20px'
-          height='20px'
-          color='inherit'
-        />
-      ),
-      component: NFTMarketplace,
-      secondary: true,
-    },
-    {
-      name: "Data Tables",
-      layout: "/admin",
-      icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
-      path: "/data-tables",
-      component: DataTables,
-    },
-    {
-      name: "Profile",
-      layout: "/admin",
-      path: "/profile",
-      icon: <Icon as={MdPerson} width='20px' height='20px' color='inherit' />,
-      component: Profile,
-    },
+const UpdateRoutes = () => {
+  const userLoggedData = JSON.parse(sessionStorage.getItem("userLoggedData"));
+  if(userLoggedData === null) {
+    routes = [
     {
       name: "Sign In",
       layout: "/auth",
@@ -121,15 +41,86 @@ else {
       icon: <Icon as={MdLock} width='20px' height='20px' color='inherit' />,
       component: SignUp,
     },
+    ]
+  } else {
+    routes = [
     {
-      name: 'All Events',
+      name: "Events",
       layout: "/admin",
-      path: "/all-events",
-      icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
-      component: OrganizerEvents,
-    },
-  ];
+      path: "/events",
+      icon: (
+        <Icon
+          as={MdOutlineShoppingCart}
+          width='20px'
+          height='20px'
+          color='inherit'
+        />
+      ),
+      component: NFTMarketplace,
+      secondary: true,
+    }, 
+    {
+      name: "Profile",
+      layout: "/admin",
+      path: "/profile",
+      icon: <Icon as={MdPerson} width='20px' height='20px' color='inherit' />,
+      component: Profile,
+    },];
+    if(userLoggedData.is_organizer == true) {
+      routes = routes.concat([
+        {
+          name: "Data Tables",
+          layout: "/admin",
+          icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+          path: "/data-tables",
+          component: DataTables,
+        },
+        
+        {
+          name: "Event Info",
+          layout: "/admin",
+          path: "/event-info",
+          icon: <Icon as={MdLock} width='20px' height='20px' color='inherit' />,
+          component: EventDisplay,
+        }
+      ])
+    }
+    if(userLoggedData.is_admin == true) {
+      routes = routes.concat([
+        {
+          name: "Main Dashboard",
+          layout: "/admin",
+          path: "/default",
+          icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
+          component: MainDashboard,
+        },
+        {
+          name: "NFT Marketplace",
+          layout: "/admin",
+          path: "/nft-marketplace",
+          icon: (
+            <Icon
+              as={MdOutlineShoppingCart}
+              width='20px'
+              height='20px'
+              color='inherit'
+            />
+          ),
+          component: NFTMarketplace,
+          secondary: true,
+        },
+        {
+          name: 'All Events',
+          layout: "/admin",
+          path: "/all-events",
+          icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
+          component: OrganizerEvents,
+        },
+      ])
+    }
+  }
 }
 
+UpdateRoutes();
 
-export default routes;
+export { UpdateRoutes, routes };

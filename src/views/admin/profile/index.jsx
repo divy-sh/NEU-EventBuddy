@@ -16,20 +16,33 @@ const API_ENDPOINT = 'http://localhost:8080';
 export default function Overview() {
   const userData = JSON.parse(sessionStorage.getItem('userLoggedData'));
 
-  const [allEvents, setAllEvents] = useState([]);
+  const [allTransactions, setAllTransactions] = useState([]);
+  const [allTickets, setAllTickets] = useState([]);
+
 
   useEffect(async () => {
-    await axios.get(`${API_ENDPOINT}/event/get/all?status=approved`)
+    await axios.get(`${API_ENDPOINT}/transaction/get/?email=${userData.email_id}`)
         .then(function (response) {
           console.log(response);
           if(response.status == 200) {
-            setAllEvents(response.data);
+            setAllTransactions(response.data);
           }
         })
         .catch(function (error) {
           console.log(error);
         });
-  }, [])
+  await axios.get(`${API_ENDPOINT}/user/get/ticket?email=${userData.email_id}`)
+      .then(function (response) {
+        console.log(response);
+        if(response.status == 200) {
+          setAllTickets(response.data);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+      },
+  [])
 
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
@@ -61,10 +74,12 @@ export default function Overview() {
         <Tickets
           gridArea='1 / 2 / 2 / 2'
           banner={banner}
+          allTickets={allTickets}
         />
         <Transactions
           gridArea='1 / 2 / 2 / 2'
           banner={banner}
+          allTransactions={allTransactions}
         />
       </Grid>
     </Box>

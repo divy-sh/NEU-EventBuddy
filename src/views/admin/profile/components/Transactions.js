@@ -1,9 +1,5 @@
 // Chakra imports
 import { Text, useColorModeValue } from "@chakra-ui/react";
-// Assets
-import Project1 from "assets/img/profile/Project1.png";
-import Project2 from "assets/img/profile/Project2.png";
-import Project3 from "assets/img/profile/Project3.png";
 // Custom components
 import Card from "components/card/Card.js";
 import React from "react";
@@ -30,29 +26,15 @@ export default function Tickets(props) {
       <Text color={textColorSecondary} fontSize='md' me='26px' mb='40px'>
         Here you can find all of your purchased tickets, for previous, as well as upcoming events.
       </Text>
-      <Transaction
-        boxShadow={cardShadow}
-        mb='20px'
-        image={Project1}
-        ranking='1'
-        link='#'
-        title='Technology behind the Blockchain'
-      />
-      <Transaction
-        boxShadow={cardShadow}
-        mb='20px'
-        image={Project2}
-        ranking='2'
-        link='#'
-        title='Greatest way to a good Economy'
-      />
-      <Transaction
-        boxShadow={cardShadow}
-        image={Project3}
-        ranking='3'
-        link='#'
-        title='Most essential tips for Burnout'
-      />
+      {props.allTransactions.map((tData, index) => {
+        return (
+          <Transaction key={index}
+            boxShadow={cardShadow}
+            mb='20px'
+            transactionData={tData}
+          />
+        )
+      })}
     </Card>
   );
 }

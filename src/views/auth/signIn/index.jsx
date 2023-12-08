@@ -27,6 +27,7 @@ import illustration from "assets/img/auth/auth.png";
 import { FcGoogle } from "react-icons/fc";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";
+import { UpdateRoutes } from "routes";
 
 function SignIn() {
   const history = useHistory();
@@ -55,7 +56,8 @@ function SignIn() {
               confirmButtonText: "Dive In!"
             });
             sessionStorage.setItem("userLoggedData", JSON.stringify(response.data.user))
-            history.push('/admin/profile')
+            UpdateRoutes()
+            history.push('/admin/events')
           }
         })
         .catch(function (error) {

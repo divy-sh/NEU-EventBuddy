@@ -14,8 +14,9 @@ import { SidebarResponsive } from 'components/sidebar/Sidebar';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { UpdateRoutes } from 'routes';
 
-import routes from 'routes.js';
+import { routes } from 'routes.js';
 export default function HeaderLinks(props) {
 	const { secondary } = props;
 	// Chakra Color Mode
@@ -39,6 +40,7 @@ export default function HeaderLinks(props) {
 	
 	  const handleLogoutClick = () => {
 		sessionStorage.removeItem('userLoggedData');
+		UpdateRoutes();
 		history.push('/auth/signin');
 	  };
 	const userData = JSON.parse(sessionStorage.getItem('userLoggedData'));

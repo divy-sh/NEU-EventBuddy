@@ -17,8 +17,6 @@ import Card from "components/card/Card.js";
 import React, { useState } from "react";
 import { useHistory} from "react-router-dom";
 import { IoHeart, IoHeartOutline } from "react-icons/io5";
-import routes from "../../routes";
-
 
 export default function NFT(props) {
   const history = useHistory();
