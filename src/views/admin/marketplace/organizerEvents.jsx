@@ -294,11 +294,8 @@ export default function OrganizerEvents() {
                           }); onOpen()}}>
                           <Icon as={MdModeEdit} width='20px' height='20px' color='inherit' /> 
                         </Button>
-                        <Button onClick={()=> { setEditEvent(tData);}}>
-                          <Icon as={MdDelete} width='20px' height='20px' color='inherit' /> 
-                        </Button>
                       </Flex>
-                      </Td>     
+                      </Td>    
                   </Tr>
                   )
                 })}
@@ -545,9 +542,6 @@ export default function OrganizerEvents() {
                           last_registration_date: tData.last_registration_date,
                           }); onOpen()}}>
                           <Icon as={MdModeEdit} width='20px' height='20px' color='inherit' /> 
-                        </Button>
-                        <Button onClick={()=> { setEditEvent(tData);}}>
-                          <Icon as={MdDelete} width='20px' height='20px' color='inherit' /> 
                         </Button>
                       </Flex>
                       </Td>     
