@@ -11,6 +11,10 @@ import {
   Tr,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { Icon } from "@chakra-ui/react";
+import {
+  MdModeEdit, MdDelete
+} from "react-icons/md";
 // Custom components
 import Card from "components/card/Card";
 import { AndroidLogo, AppleLogo, WindowsLogo } from "components/icons/Icons";
@@ -39,6 +43,8 @@ export default function DevelopmentTable(props) {
     usePagination
   );
 
+  console.log('TableData', tableData)
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -64,7 +70,7 @@ export default function DevelopmentTable(props) {
           fontSize='22px'
           fontWeight='700'
           lineHeight='100%'>
-          Development Table
+          Events Table
         </Text>
         <Menu />
       </Flex>
@@ -90,95 +96,67 @@ export default function DevelopmentTable(props) {
             </Tr>
           ))}
         </Thead>
-        <Tbody {...getTableBodyProps()}>
-          {page.map((row, index) => {
-            prepareRow(row);
+        <Tbody>
+          {tableData.map((tData, index) => {
+            console.log(tData.event_name);
             return (
-              <Tr {...row.getRowProps()} key={index}>
-                {row.cells.map((cell, index) => {
-                  let data = "";
-                  if (cell.column.Header === "NAME") {
-                    data = (
-                      <Text color={textColor} fontSize='sm' fontWeight='700'>
-                        {cell.value}
-                      </Text>
-                    );
-                  } else if (cell.column.Header === "TECH") {
-                    data = (
-                      <Flex align='center'>
-                        {cell.value.map((item, key) => {
-                          if (item === "apple") {
-                            return (
-                              <AppleLogo
-                                key={key}
-                                color={iconColor}
-                                me='16px'
-                                h='18px'
-                                w='15px'
-                              />
-                            );
-                          } else if (item === "android") {
-                            return (
-                              <AndroidLogo
-                                key={key}
-                                color={iconColor}
-                                me='16px'
-                                h='18px'
-                                w='16px'
-                              />
-                            );
-                          } else if (item === "windows") {
-                            return (
-                              <WindowsLogo
-                                key={key}
-                                color={iconColor}
-                                h='18px'
-                                w='19px'
-                              />
-                            );
-                          }
-                        })}
-                      </Flex>
-                    );
-                  } else if (cell.column.Header === "DATE") {
-                    data = (
-                      <Text color={textColor} fontSize='sm' fontWeight='700'>
-                        {cell.value}
-                      </Text>
-                    );
-                  } else if (cell.column.Header === "PROGRESS") {
-                    data = (
-                      <Flex align='center'>
-                        <Text
-                          me='10px'
-                          color={textColor}
-                          fontSize='sm'
-                          fontWeight='700'>
-                          {cell.value}%
-                        </Text>
-                        <Progress
-                          variant='table'
-                          colorScheme='brandScheme'
-                          h='8px'
-                          w='63px'
-                          value={cell.value}
-                        />
-                      </Flex>
-                    );
-                  }
-                  return (
-                    <Td
-                      {...cell.getCellProps()}
-                      key={index}
-                      fontSize={{ sm: "14px" }}
-                      minW={{ sm: "150px", md: "200px", lg: "auto" }}
-                      borderColor='transparent'>
-                      {data}
-                    </Td>
-                  );
-                })}
-              </Tr>
-            );
+              <Tr key={index}>
+                <Td
+                  fontSize={{ sm: "14px" }}
+                  minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                  borderColor='transparent'>
+                  <Flex align='center'>
+                    <Text color={textColor} fontSize='sm' fontWeight='700'>
+                      {tData.event_name}
+                    </Text>
+                  </Flex>
+                </Td> 
+                <Td
+                  fontSize={{ sm: "14px" }}
+                  minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                  borderColor='transparent'>
+                  <Flex align='center'>
+                    <Text color={textColor} fontSize='sm' fontWeight='700'>
+                      {tData.event_description}
+                    </Text>
+                  </Flex>
+                </Td> 
+                <Td
+                  fontSize={{ sm: "14px" }}
+                  minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                  borderColor='transparent'>
+                  <Flex align='center'>
+                    <Text color={textColor} fontSize='sm' fontWeight='700'>
+                      {tData.start_time}
+                    </Text>
+                  </Flex>
+                </Td> 
+                <Td
+                  fontSize={{ sm: "14px" }}
+                  minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                  borderColor='transparent'>
+                  <Flex align='center'>
+                    <Text color={textColor} fontSize='sm' fontWeight='700'>
+                      {tData.end_time}
+                    </Text>
+                  </Flex>
+                </Td> 
+                <Td
+                  fontSize={{ sm: "14px" }}
+                  minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                  borderColor='transparent'>
+                  <Flex align='center'>
+                    <Text color={textColor} fontSize='sm' fontWeight='700'>
+                      {tData.last_registration_date}
+                    </Text>
+                  </Flex>
+                </Td> 
+                <Td>
+                  <Icon onClick={()=>{console.log("Edit")}} as={MdModeEdit} width='20px' height='20px' color='inherit' />
+                  <Icon onClick={()=>{console.log("Delete")}} as={MdDelete} width='20px' height='20px' color='inherit' />
+                </Td>     
+            </Tr>
+            )
           })}
         </Tbody>
       </Table>

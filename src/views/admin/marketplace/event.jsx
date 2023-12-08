@@ -18,6 +18,7 @@ import {
 import Banner from "views/admin/marketplace/components/Banner";
 import Information from "views/admin/profile/components/Information";
 import Card from "components/card/Card.js";
+import Swal from 'sweetalert2'
 
 // Assets
 import Nft1 from "assets/img/nfts/Nft1.png";
@@ -68,6 +69,36 @@ export default function EventDisplay() {
     // Update the state with the new event
     setRegisteredEvents([...registeredEvents, newEvent]);
   };
+  
+  let usernameInput;
+  let passwordInput;
+  
+  const buyTickets = () => {
+    Swal.fire({
+      title: 'Card Payment',
+      html: `
+        <input type="text" id="username" class="swal2-input" placeholder="Username">
+        <input type="password" id="password" class="swal2-input" placeholder="Password">
+      `,
+      confirmButtonText: 'Pay for Tickets',
+      focusConfirm: false,
+      didOpen: () => {
+        const popup = Swal.getPopup() || null
+        usernameInput = popup.querySelector('#username') 
+        passwordInput = popup.querySelector('#password')
+        // usernameInput.onkeyup = (event) => event.key === 'Enter' && Swal.clickConfirm()
+        // passwordInput.onkeyup = (event) => event.key === 'Enter' && Swal.clickConfirm()
+      },
+      preConfirm: () => {
+        const username = usernameInput.value
+        const password = passwordInput.value
+        if (!username || !password) {
+          Swal.showValidationMessage(`Please enter username and password`)
+        }
+        return { username, password }
+      },
+    })
+  }
 
   // const callEventPage = (event) => {
   //   // Your event registration logic...
@@ -141,7 +172,7 @@ export default function EventDisplay() {
       <br/>
       <Flex pl='25px' justify='space-between' mb='10px' align='center'>
       <Button
-        // onClick={() => {goToEven}}
+        onClick={buyTickets}
         variant='darkBrand'
         color='white'
         fontSize='xl'

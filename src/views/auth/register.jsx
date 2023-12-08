@@ -24,6 +24,7 @@ import illustration from "assets/img/auth/auth.png";
 import { FcGoogle } from "react-icons/fc";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";
+import Swal from 'sweetalert2'
 
 function SignUp() {
 
@@ -47,11 +48,16 @@ function SignUp() {
         "first_name" : firstName.value,
         "last_name" : lastName.value,
         "date_of_birth" : birthDate.value,
-        "is_organizer" : false
+        "is_organizer" : true
       })
         .then(function (response) {
           console.log(response);
           if(response.status == 200) {
+            Swal.fire({
+              title: "Good job!",
+              text: "You clicked the button!",
+              icon: "success"
+            });
             console.log(history)
             history.push('/admin/sign-in')
           }

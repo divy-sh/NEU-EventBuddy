@@ -21,6 +21,7 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { HSeparator } from "components/separator/Separator";
 import DefaultAuth from "layouts/auth/Default";
 import axios from "axios";
+import Swal from 'sweetalert2'
 // Assets
 import illustration from "assets/img/auth/auth.png";
 import { FcGoogle } from "react-icons/fc";
@@ -29,6 +30,7 @@ import { RiEyeCloseLine } from "react-icons/ri";
 
 function SignIn() {
   const history = useHistory();
+  
   const API_ENDPOINT = 'http://localhost:8080'
 
   const handleLogin = async (e) => {
@@ -46,11 +48,23 @@ function SignIn() {
         .then(function (response) {
           console.log(response);
           if(response.status == 200) {
+            Swal.fire({
+              title: "Welcome User!",
+              text: "Login Successful!",
+              icon: "success",
+              confirmButtonText: "Dive In!"
+            });
             sessionStorage.setItem("userLoggedData", JSON.stringify(response.data.user))
             history.push('/admin/profile')
           }
         })
         .catch(function (error) {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Email and Password combination is incorrect!",
+            confirmButtonText: "Try Again!"
+          });
           console.log(error);
         });
     // await axios.post('', postData,)

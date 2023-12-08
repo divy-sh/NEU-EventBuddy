@@ -16,6 +16,7 @@ import Profile from "views/admin/profile";
 import DataTables from "views/admin/dataTables";
 import RTL from "views/admin/rtl";
 import EventDisplay from "views/admin/marketplace/event";
+import OrganizerEvents from "views/admin/marketplace/organizerEvents";
 
 // Auth Imports
 import SignInCentered from "views/auth/signIn";
@@ -25,7 +26,7 @@ const userLoggedData = JSON.parse(sessionStorage.getItem("userLoggedData")) || {
 console.log("herhe", userLoggedData);
 var routes = [];
 
-if(userLoggedData.admin == false) {
+if(userLoggedData.is_organizer == false) {
 routes = [
   {
     name: "Events",
@@ -132,11 +133,11 @@ else {
       component: SignUp,
     },
     {
-      name: "RTL Admin",
-      layout: "/rtl",
-      path: "/rtl-default",
+      name: 'All Events',
+      layout: "/admin",
+      path: "/all-events",
       icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
-      component: RTL,
+      component: OrganizerEvents,
     },
   ];
 }
