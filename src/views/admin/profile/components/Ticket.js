@@ -14,7 +14,7 @@ import React from "react";
 // Assets
 import { MdEdit } from "react-icons/md";
 
-export default function Project(props) {
+export default function Ticket(props) {
   const { title, ranking, link, image, ...rest } = props;
   // Chakra Color Mode
   const textColorPrimary = useColorModeValue("secondaryGray.900", "white");

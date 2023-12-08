@@ -41,6 +41,7 @@ export default function HeaderLinks(props) {
 		sessionStorage.removeItem('userLoggedData');
 		history.push('/auth/signin');
 	  };
+	const userData = JSON.parse(sessionStorage.getItem('userLoggedData'));
 	return (
 		<Flex
 			w={{ sm: '100%', md: 'auto' }}
@@ -57,7 +58,7 @@ export default function HeaderLinks(props) {
 					<Avatar
 						_hover={{ cursor: 'pointer' }}
 						color="white"
-						name="Adela Parkson"
+						name=""
 						bg="#11047A"
 						size="sm"
 						w="40px"
@@ -76,7 +77,7 @@ export default function HeaderLinks(props) {
 							fontSize="sm"
 							fontWeight="700"
 							color={textColor}>
-							👋&nbsp; Hello, there
+							👋&nbsp; Hello, {userData.first_name + " " + userData.last_name}
 						</Text>
 					</Flex>
 					<Flex flexDirection="column" p="10px">

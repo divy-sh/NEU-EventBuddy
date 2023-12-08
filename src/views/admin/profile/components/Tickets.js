@@ -7,9 +7,9 @@ import Project3 from "assets/img/profile/Project3.png";
 // Custom components
 import Card from "components/card/Card.js";
 import React from "react";
-import Project from "views/admin/profile/components/Project";
+import Ticket from "views/admin/profile/components/Ticket";
 
-export default function Projects(props) {
+export default function Tickets(props) {
   // Chakra Color Mode
   const textColorPrimary = useColorModeValue("secondaryGray.900", "white");
   const textColorSecondary = "gray.400";
@@ -25,13 +25,12 @@ export default function Projects(props) {
         fontSize='2xl'
         mt='10px'
         mb='4px'>
-        All projects
+        All Tickets
       </Text>
       <Text color={textColorSecondary} fontSize='md' me='26px' mb='40px'>
-        Here you can find more details about your projects. Keep you user
-        engaged by providing meaningful information.
+        Here you can find all of your purchased tickets, for previous, as well as upcoming events.
       </Text>
-      <Project
+      <Ticket
         boxShadow={cardShadow}
         mb='20px'
         image={Project1}
@@ -39,7 +38,7 @@ export default function Projects(props) {
         link='#'
         title='Technology behind the Blockchain'
       />
-      <Project
+      <Ticket
         boxShadow={cardShadow}
         mb='20px'
         image={Project2}
@@ -47,7 +46,7 @@ export default function Projects(props) {
         link='#'
         title='Greatest way to a good Economy'
       />
-      <Project
+      <Ticket
         boxShadow={cardShadow}
         image={Project3}
         ranking='3'
