@@ -59,6 +59,8 @@ export default function OrganizerEvents() {
     event_description: '',
     start_time: '',
     end_time: '',
+    entry_fees:0,
+    capacity:0,
     last_registration_date: ''
   });
   const handleChange = (e) => {
@@ -67,7 +69,7 @@ export default function OrganizerEvents() {
   };
   const [capacity, setCapacity] = useState(1);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const headerGroups = ["Name", "Description", "Start Time", "End Time", "Last Registration Time", "Actions"]
+  const headerGroups = ["Name", "Description", "Start Time", "End Time", "Last Registration Time", "Capacity", "Entry Fees", "Actions"]
 
   useEffect(async () => {
     await axios.get(`${API_ENDPOINT}/event/get/all?status=approved`)
@@ -90,6 +92,8 @@ export default function OrganizerEvents() {
     const {eventName, eventDescrp, start_time, end_time, last_registration_date } = e.target;
 
     console.log(editEvent);
+
+    const creationHeader = {'content-type':'application/json'}
     
     // Pass to API
     await axios.post(`${API_ENDPOINT}/event/create`,
@@ -98,9 +102,11 @@ export default function OrganizerEvents() {
       "event_description": editEvent.event_description,
       "start_time" : editEvent.start_time,
       "end_time" : editEvent.end_time,
+      "entry_fees": editEvent.entry_fees,
+      "capacity": editEvent.capacity,
       "last_registration_date" : editEvent.last_registration_date,
-      "org_id" : "1"
-    })
+      "org_id" : 1
+    }, headers=creationHeader)
       .then(function (response) {
         console.log(response);
         if(response.status == 200) {
@@ -237,7 +243,27 @@ export default function OrganizerEvents() {
                             {tData.last_registration_date}
                           </Text>
                         </Flex>
+                      </Td>
+                      <Td
+                        fontSize={{ sm: "14px" }}
+                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                        borderColor='transparent'>
+                        <Flex align='center'>
+                          <Text color={textColor} fontSize='sm' fontWeight='700'>
+                            {tData.capacity}
+                          </Text>
+                        </Flex>
                       </Td> 
+                      <Td
+                        fontSize={{ sm: "14px" }}
+                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
+                        borderColor='transparent'>
+                        <Flex align='center'>
+                          <Text color={textColor} fontSize='sm' fontWeight='700'>
+                            {tData.entry_fees}
+                          </Text>
+                        </Flex>
+                      </Td>  
                       <Td>
                       <Flex pl='25px' pr='25px' justify='space-between' mb='10px' align='center'>
                         <Button onClick={()=> { setEditEvent({
@@ -317,6 +343,18 @@ export default function OrganizerEvents() {
                     mb='24px'
                     fontWeight='500'
                     size='lg'
+                  />
+                  <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
+                    Entry Fees
+                  </FormLabel>
+                  <Input variant='auth' name="entry_fees" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='number' 
+                  mb='24px' onChange={handleChange} defaultValue={editEvent.entry_fees || 0} fontWeight='500' size='lg'
+                  />
+                  <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
+                    Capacity
+                  </FormLabel>
+                  <Input variant='auth' name="capacity" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='number' 
+                  mb='24px' onChange={handleChange} defaultValue={editEvent.capacity || 0} fontWeight='500' size='lg'
                   />
                   <FormLabel
                     ms='4px'

@@ -65,7 +65,15 @@ const UpdateRoutes = () => {
       path: "/profile",
       icon: <Icon as={MdPerson} width='20px' height='20px' color='inherit' />,
       component: Profile,
-    },];
+    },
+    {
+      name: "Event Info",
+      layout: "/admin",
+      path: "/event-info",
+      icon: <Icon as={MdLock} width='20px' height='20px' color='inherit' />,
+      component: EventDisplay,
+    }
+  ];
     if(userLoggedData.is_organizer == true) {
       routes = routes.concat([
         {
@@ -75,14 +83,21 @@ const UpdateRoutes = () => {
           path: "/data-tables",
           component: DataTables,
         },
-        
         {
-          name: "Event Info",
+          name: 'All Events',
           layout: "/admin",
-          path: "/event-info",
-          icon: <Icon as={MdLock} width='20px' height='20px' color='inherit' />,
-          component: EventDisplay,
-        }
+          path: "/all-events",
+          icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
+          component: OrganizerEvents,
+        },
+        
+        // {
+        //   name: "Event Info",
+        //   layout: "/admin",
+        //   path: "/event-info",
+        //   icon: <Icon as={MdLock} width='20px' height='20px' color='inherit' />,
+        //   component: EventDisplay,
+        // }
       ])
     }
     if(userLoggedData.is_admin == true) {
@@ -109,13 +124,13 @@ const UpdateRoutes = () => {
           component: NFTMarketplace,
           secondary: true,
         },
-        {
-          name: 'All Events',
-          layout: "/admin",
-          path: "/all-events",
-          icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
-          component: OrganizerEvents,
-        },
+        // {
+        //   name: 'All Events',
+        //   layout: "/admin",
+        //   path: "/all-events",
+        //   icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
+        //   component: OrganizerEvents,
+        // },
       ])
     }
   }
