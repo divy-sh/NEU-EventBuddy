@@ -52,8 +52,19 @@ export default function OrganizerEvents() {
   const history = useHistory();
   
   const [selectedEvent, setSelectedEvent] = useState({});
+
   const brandStars = useColorModeValue("brand.500", "brand.400");
-  const [editEvent, setEditEvent] = useState({});
+  const [editEvent, setEditEvent] = useState({
+    event_name: '',
+    event_description: '',
+    start_time: '',
+    end_time: '',
+    last_registration_date: ''
+  });
+  const handleChange = (e) => {
+    // Update the form data as the user types
+    setEditEvent({ ...editEvent, [e.target.name]: e.target.value });
+  };
   const [capacity, setCapacity] = useState(1);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const headerGroups = ["Name", "Description", "Start Time", "End Time", "Last Registration Time", "Actions"]
@@ -77,16 +88,18 @@ export default function OrganizerEvents() {
     e.preventDefault();
 
     const {eventName, eventDescrp, start_time, end_time, last_registration_date } = e.target;
+
+    console.log(editEvent);
     
     // Pass to API
     await axios.post(`${API_ENDPOINT}/event/create`,
      {
-      "event_name": eventName.value,
-         "event_description": eventDescrp.value,
-         "start_time" : start_time.value,
-         "end_time" : end_time.value,
-         "last_registration_date" : last_registration_date.value,
-         "org_id" : organizer_id.value
+      "event_name": editEvent.event_name,
+      "event_description": editEvent.event_description,
+      "start_time" : editEvent.start_time,
+      "end_time" : editEvent.end_time,
+      "last_registration_date" : editEvent.last_registration_date,
+      "org_id" : "1"
     })
       .then(function (response) {
         console.log(response);
@@ -227,7 +240,13 @@ export default function OrganizerEvents() {
                       </Td> 
                       <Td>
                       <Flex pl='25px' pr='25px' justify='space-between' mb='10px' align='center'>
-                        <Button onClick={()=> { setEditEvent(tData); onOpen()}}>
+                        <Button onClick={()=> { setEditEvent({
+                          event_name: tData.event_name,
+                          event_description: tData.event_description,
+                          start_time: tData.start_time,
+                          end_time: tData.end_time,
+                          last_registration_date: tData.last_registration_date,
+                          }); onOpen()}}>
                           <Icon as={MdModeEdit} width='20px' height='20px' color='inherit' /> 
                         </Button>
                         <Button onClick={()=> { setEditEvent(tData);}}>
@@ -256,26 +275,26 @@ export default function OrganizerEvents() {
               <ModalHeader>Event Details</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
-              <form style={{'padding':'20px'}}>
+              <form onSubmit={handleSubmit} style={{'padding':'20px'}}>
                 <FormControl>
                   {/* First Name  */}
                 <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
                     Event Name
                   </FormLabel>
-                  <Input variant='auth' name="eventName" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='text' 
-                  placeholder='Enter Event Name' mb='24px' value={editEvent.event_name || null} fontWeight='500' size='lg'
+                  <Input variant='auth' name="event_name" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='text' 
+                  placeholder='Enter Event Name' mb='24px' onChange={handleChange} defaultValue={editEvent.event_name || ""} fontWeight='500' size='lg'
                   />
                   <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
                     Event Description
                   </FormLabel>
-                  <Input variant='auth' name="eventDescrp" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='textarea' 
-                  placeholder='Enter Event Description' value={editEvent.event_description || null} mb='24px' fontWeight='500' size='lg'
+                  <Input variant='auth' name="event_description" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='textarea' 
+                  placeholder='Enter Event Description' onChange={handleChange} defaultValue={editEvent.event_description || ""} mb='24px' fontWeight='500' size='lg'
                   />
                   <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
                     Start Time
                   </FormLabel>
                   <Input variant='auth' name="start_time" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='datetime-local' 
-                  mb='24px' value={editEvent.start_time || null} fontWeight='500' size='lg'
+                  mb='24px' onChange={handleChange} defaultValue={editEvent.start_time || ""} fontWeight='500' size='lg'
                   />
                   <FormLabel
                     display='flex'
@@ -293,7 +312,8 @@ export default function OrganizerEvents() {
                     ms={{ base: "0px", md: "0px" }}
                     type='datetime-local'
                     name = 'end_time'
-                    value={editEvent.end_time || null}
+                    onChange={handleChange}
+                    defaultValue={editEvent.end_time || null}
                     mb='24px'
                     fontWeight='500'
                     size='lg'
@@ -313,7 +333,8 @@ export default function OrganizerEvents() {
                     ms={{ base: "0px", md: "0px" }}
                     type='datetime-local'
                     name = 'end_time'
-                    value={editEvent.last_registration_date || null}
+                    onChange={handleChange}
+                    defaultValue={editEvent.last_registration_date || null}
                     mb='24px'
                     fontWeight='500'
                     size='lg'
