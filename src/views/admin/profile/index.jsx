@@ -67,12 +67,12 @@ export default function Overview() {
         if (result.isConfirmed) {
           const response = axios.delete(`${API_ENDPOINT}/user/delete?email_id=${userData.email_id}`);
           console.log(response)
-          if (response.status === 200) {  
+          if (response.status == 200) {  
             sessionStorage.removeItem('userLoggedData');
             UpdateRoutes();
-            history.push('/auth/sign-in');
           }
         }
+        history.push('/auth/sign-in');
       });
       
     } catch (error) {
