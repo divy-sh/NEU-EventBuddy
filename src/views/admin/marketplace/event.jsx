@@ -11,6 +11,7 @@ import {
   SimpleGrid,
   FormControl,FormLabel,
   Input,
+  Select,
   Modal, 
   ModalOverlay,
   ModalContent,
@@ -19,6 +20,7 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
+  SelectField,
 } from "@chakra-ui/react";
 
 // Custom components
@@ -41,6 +43,7 @@ export default function EventDisplay() {
     "unset"
   );
 
+  const [userCards, setUserCards] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [registeredEvents, setRegisteredEvents] = useState([]);
   const history = useHistory();
@@ -56,23 +59,41 @@ export default function EventDisplay() {
     setCapacity(Math.max(1, capacity - 1))
   }
 
-  useEffect(() => {
+  const [cardSelected, setCardSelected] = useState("");
+  
+  const handleSelectChange = (e) => {
+    // Update the form data as the user types
+    setCardSelected(e.target.value);
+  };
+
+  useEffect(async () => {
     var selectedE = JSON.parse(sessionStorage.getItem("selectedEvent")) || null;
     console.log("selected", selectedE)
     setSelectedEvent(selectedE)
+
+    await axios.get(`${API_ENDPOINT}/user/get/card?email=${userData.email_id}`)
+      .then(function (response) {
+        console.log("card", response.data)
+        if(response.status == 200) {
+          setUserCards(response.data);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+      // const {cc_number, cvv, holder_name} = e.target;
+      // // console.log(cc_number)
 
-      const {cc_number, cvv, holder_name} = e.target;
-
-      console.log(`Form submitted, ${cc_number.value}, ${cvv.value}, ${holder_name.value}`)
+      // // console.log(`Form submitted, ${cc_number.value}, ${cvv.value}, ${holder_name.value}`)
       
       // Pass to API
       await axios.post(`${API_ENDPOINT}/transaction/buy/ticket`,
        {
-        "credit_card_num" : cc_number.value,
+        "credit_card_num" : cardSelected,
         "email_id" : userData.email_id,
         "event_id" : selectedEvent.event_id,
         "total_tickets" : capacity
@@ -85,6 +106,7 @@ export default function EventDisplay() {
             icon: "success",
             confirmButtonText: "See you there!"
           });
+          onClose();
           history.push('/admin/event-info')
         }
       })
@@ -215,21 +237,24 @@ export default function EventDisplay() {
               <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
                   Credit Card Number
                 </FormLabel>
-                <Input variant='auth' name="cc_number" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='text' 
-                mb='24px' value="" fontWeight='500' size='lg'
-                />
-                <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
+                <Select variant='auth' onChange={handleSelectChange} name="cc_number" mb='24px' fontWeight='500' placeholder='Select your Credit Card' size='lg'>
+                {userCards.map((card, index) => {
+                  return (
+                  <option variant="auth" fontSize='sm' value={card.credit_card_num}>{card.credit_card_num}</option>
+                  )})}
+                </Select>
+                {/* <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
                   Cvv
                 </FormLabel>
                 <Input variant='auth' name="cvv" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='text' 
-                value="" mb='24px' fontWeight='500' size='lg'
+                mb='24px' fontWeight='500' size='lg'
                 />
                 <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
                   Card Holder Name
                 </FormLabel>
                 <Input variant='auth' name="holder_name" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='password' 
                 mb='24px' value="" fontWeight='500' size='lg'
-                />
+                /> */}
                 {/* <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
                   Birth Date
                 </FormLabel>

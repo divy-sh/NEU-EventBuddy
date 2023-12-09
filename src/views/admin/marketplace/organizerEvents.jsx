@@ -55,7 +55,6 @@ export default function OrganizerEvents() {
   
   const [isUpdateCheck, setIsUpdateCheck] = useState(false);
   
-
   const brandStars = useColorModeValue("brand.500", "brand.400");
   const [editEvent, setEditEvent] = useState({
     event_id: 0,
@@ -67,11 +66,12 @@ export default function OrganizerEvents() {
     capacity:0,
     last_registration_date: ''
   });
+
   const handleChange = (e) => {
     // Update the form data as the user types
-    console.log(editEvent)
     setEditEvent({ ...editEvent, [e.target.name]: e.target.value });
   };
+
   const [capacity, setCapacity] = useState(1);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const headerGroups = ["Name", "Description", "Start Time", "End Time", "Last Registration Time", "Capacity", "Entry Fees", "Actions"]
@@ -120,8 +120,8 @@ export default function OrganizerEvents() {
 
     const {eventName, eventDescrp, start_time, end_time, last_registration_date } = e.target;
 
-    console.log(editEvent);
-    console.log(isUpdateCheck)
+    // console.log(editEvent);
+    // console.log(isUpdateCheck)
 
     if(isUpdateCheck) {
       await axios.post(`${API_ENDPOINT}/event/update`,
@@ -145,8 +145,7 @@ export default function OrganizerEvents() {
             text: "Your event has updated successfully",
             icon: "success"
           });
-          // console.log(history)
-          // history.push('/admin/all-event')
+          history.push('/admin/all-events')
         }
       })
       .catch(function (error) {
@@ -173,6 +172,7 @@ export default function OrganizerEvents() {
         "org_id" : 1
       })
       .then(function (response) {
+        onClose();
         // console.log(response);
         if(response.status == 200) {
           Swal.fire({
@@ -180,7 +180,7 @@ export default function OrganizerEvents() {
             text: "Your event has been sent for Admin approval",
             icon: "success"
           });
-          // history.push('/admin/all-event')
+          history.push('/admin/all-events')
         }
       })
       .catch(function (error) {

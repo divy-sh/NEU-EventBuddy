@@ -48,7 +48,8 @@ function SignUp() {
         "first_name" : firstName.value,
         "last_name" : lastName.value,
         "date_of_birth" : birthDate.value,
-        "is_organizer" : true
+        "is_organizer" : true,
+        "is_admin" : true
       })
         .then(function (response) {
           // console.log(response);

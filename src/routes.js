@@ -78,13 +78,13 @@ const UpdateRoutes = () => {
   ];
     if(userLoggedData.is_organizer == true) {
       routes = routes.concat([
-        {
-          name: "Data Tables",
-          layout: "/admin",
-          icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
-          path: "/data-tables",
-          component: DataTables,
-        },
+        // {
+        //   name: "Data Tables",
+        //   layout: "/admin",
+        //   icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+        //   path: "/data-tables",
+        //   component: DataTables,
+        // },
         {
           name: 'All Events',
           layout: "/admin",
