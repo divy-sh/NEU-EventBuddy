@@ -18,6 +18,9 @@ import DataTables from "views/admin/dataTables";
 import EventDisplay from "views/admin/marketplace/event";
 import OrganizerEvents from "views/admin/marketplace/organizerEvents";
 import AdminEvents from "views/admin/marketplace/adminEvents";
+import AdminAds from "views/admin/marketplace/AdminAds";
+import OrganizerAds from "views/admin/marketplace/OrganizerAds"
+
 
 // Auth Imports
 import SignInCentered from "views/auth/signIn";
@@ -78,28 +81,20 @@ const UpdateRoutes = () => {
   ];
     if(userLoggedData.is_organizer == true) {
       routes = routes.concat([
-        // {
-        //   name: "Data Tables",
-        //   layout: "/admin",
-        //   icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
-        //   path: "/data-tables",
-        //   component: DataTables,
-        // },
         {
-          name: 'All Events',
+          name: 'Organize Events',
           layout: "/admin",
           path: "/all-events",
           icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
           component: OrganizerEvents,
         },
-        
-        // {
-        //   name: "Event Info",
-        //   layout: "/admin",
-        //   path: "/event-info",
-        //   icon: <Icon as={MdLock} width='20px' height='20px' color='inherit' />,
-        //   component: EventDisplay,
-        // }
+        {
+          name: 'Organize Ads',
+          layout: "/admin",
+          path: "/all-ads",
+          icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
+          component: OrganizerEvents,
+        }
       ])
     }
     if(userLoggedData.is_admin == true) {
@@ -112,26 +107,18 @@ const UpdateRoutes = () => {
           component: MainDashboard,
         },
         {
-          name: "NFT Marketplace",
-          layout: "/admin",
-          path: "/nft-marketplace",
-          icon: (
-            <Icon
-              as={MdOutlineShoppingCart}
-              width='20px'
-              height='20px'
-              color='inherit'
-            />
-          ),
-          component: NFTMarketplace,
-          secondary: true,
-        },
-        {
-          name: 'Event Review',
+          name: 'Approve Events',
           layout: "/admin",
           path: "/review-events",
           icon: <Icon as={MdChatBubble} width='20px' height='20px' color='inherit' />,
           component: AdminEvents,
+        },
+        {
+          name: 'Approve Ads',
+          layout: "/admin",
+          path: "/review-ads",
+          icon: <Icon as={MdChatBubble} width='20px' height='20px' color='inherit' />,
+          component: AdminAds,
         },
       ])
     }
