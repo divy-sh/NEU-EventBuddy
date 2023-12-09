@@ -109,7 +109,7 @@ export default function AdminEvents() {
               showConfirmButton: false,
               timer: 1000
             });
-            history.push('/admin/review-events')
+          window.location.reload();
           }
         })
         .catch(function (error) {
@@ -135,7 +135,7 @@ export default function AdminEvents() {
               showConfirmButton: false,
               timer: 1000
             });
-            history.push('/admin/review-events')
+            window.location.reload();
           }
         })
         .catch(function (error) {

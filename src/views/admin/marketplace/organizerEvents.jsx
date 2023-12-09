@@ -145,7 +145,8 @@ export default function OrganizerEvents() {
             text: "Your event has updated successfully",
             icon: "success"
           });
-          window.location.reload();        }
+          window.location.reload();        
+        }
       })
       .catch(function (error) {
         // .log(error);
