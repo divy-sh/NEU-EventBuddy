@@ -11,11 +11,12 @@ const API_ENDPOINT = 'http://localhost:8080';
 
 export default function Banner() {
   const [apiData, setApiData] = useState(null);
-
+  const [ad, setAd] = useState([]);
   useEffect(async () => {
     await axios.get(`${API_ENDPOINT}/ad/get?status=approved`)
         .then(function (response) {
-          console.log(response);
+          console.log(response.data)
+          setAd(response.data)
         })
         .catch(function (error) {
           console.log(error);
@@ -74,7 +75,7 @@ export default function Banner() {
           py='20px'
           px='27'
           me='38px'>
-          Discover now
+          {ad.ad_title}
         </Button>
         <Link>
           <Text color='white' fontSize='sm' fontWeight='500'>

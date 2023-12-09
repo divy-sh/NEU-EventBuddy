@@ -58,14 +58,11 @@ export default function OrganizerEvents() {
 
   const brandStars = useColorModeValue("brand.500", "brand.400");
   const [editEvent, setEditEvent] = useState({
-    event_id: 0,
-    event_name: '',
-    event_description: '',
-    start_time: '',
-    end_time: '',
-    entry_fees:0,
-    capacity:0,
-    last_registration_date: ''
+    ad_id: 0,
+    ad_title: '',
+    ad_img_loc: '',
+    ad_begin_time: '',
+    ad_end_time: '',
   });
   const handleChange = (e) => {
     // Update the form data as the user types
@@ -74,10 +71,10 @@ export default function OrganizerEvents() {
   };
   const [capacity, setCapacity] = useState(1);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const headerGroups = ["Name", "Description", "Start Time", "End Time", "Last Registration Time", "Capacity", "Entry Fees", "Actions"]
+  const headerGroups = ["Ad Title", "Ad Url", "Start Time", "End Time"]
 
   useEffect(async () => {
-    await axios.get(`${API_ENDPOINT}/event/get/all?status=approved`)
+    await axios.get(`${API_ENDPOINT}/ad/get/all/status?approval=approved`)
         .then(function (response) {
           console.log(response);
           if(response.status == 200) {
@@ -89,7 +86,7 @@ export default function OrganizerEvents() {
           console.log(error);
         });
 
-    await axios.get(`${API_ENDPOINT}/event/get/all?status=in-progress`)
+    await axios.get(`${API_ENDPOINT}/ad/get/all/status?approval=in-progress`)
       .then(function (response) {
         console.log(response);
         if(response.status == 200) {
@@ -101,7 +98,7 @@ export default function OrganizerEvents() {
         console.log(error);
     });
     
-    await axios.get(`${API_ENDPOINT}/event/get/all?status=rejected`)
+    await axios.get(`${API_ENDPOINT}/ad/get/all/status?approval=rejected`)
       .then(function (response) {
         console.log(response);
         if(response.status == 200) {
@@ -113,6 +110,7 @@ export default function OrganizerEvents() {
         console.log(error);
     });
   }, [])
+
 
   const handleSubmit = async (e) => {
   
@@ -129,22 +127,20 @@ export default function OrganizerEvents() {
         "ad_id": editEvent.ad_id,
         "ad_title": editEvent.ad_title,
         "ad_img_loc": editEvent.ad_img_loc,
-        "start_time" : editEvent.start_time,
-        "end_time" : editEvent.end_time,
-        "entry_fees": editEvent.entry_fees,
-        "capacity": editEvent.capacity,
-        "last_registration_date" : editEvent.last_registration_date,
-        "org_id" : 1
+        "ad_begin_time" : editEvent.start_time,
+        "ad_end_time" : editEvent.end_time,
+        "ad_org_id": 1
       })
       .then(function (response) {
         // console.log(response);
         if(response.status == 200) {
           onClose();
           Swal.fire({
-            title: "Event Update Successfully!",
-            text: "Your event has updated successfully",
+            title: "Ad Updated Successfully!",
+            text: "Your Ad has updated successfully",
             icon: "success"
           });
+          window.location.reload();
           // console.log(history)
           // history.push('/admin/all-event')
         }
@@ -161,25 +157,23 @@ export default function OrganizerEvents() {
     }
     else{
     // Pass to API
-      await axios.post(`${API_ENDPOINT}/event/create`,
+      await axios.post(`${API_ENDPOINT}/ad/create`,
       {
-        "event_name": editEvent.event_name,
-        "event_description": editEvent.event_description,
-        "start_time" : editEvent.start_time,
-        "end_time" : editEvent.end_time,
-        "entry_fees": editEvent.entry_fees,
-        "capacity": editEvent.capacity,
-        "last_registration_date" : editEvent.last_registration_date,
-        "org_id" : 1
+        "ad_title": editEvent.ad_title,
+        "ad_img_loc": editEvent.ad_img_loc,
+        "ad_begin_time" : editEvent.start_time,
+        "ad_end_time" : editEvent.end_time,
+        "ad_org_id": 1
       })
       .then(function (response) {
         // console.log(response);
         if(response.status == 200) {
           Swal.fire({
-            title: "Event Created Successfully!",
-            text: "Your event has been sent for Admin approval",
+            title: "Ad Created Successfully!",
+            text: "Your Ad has been sent for Admin approval",
             icon: "success"
           });
+          window.location.reload();
           // history.push('/admin/all-event')
         }
       })
@@ -209,7 +203,7 @@ export default function OrganizerEvents() {
           fontSize='4xl'
           mt='40px'
           mb='4px'>
-          All Events
+          All Ads
         </Text>
         <Button
           onClick={() => {setIsUpdateCheck(false); setEditEvent({}); onOpen()}}
@@ -220,7 +214,7 @@ export default function OrganizerEvents() {
           borderRadius='10px'
           px='24px'
           py='5px'>
-          Add Ads
+          Add Ad
         </Button> 
       </Flex>
         <Box p={{ base: "10px", md: "40px", xl: "40px" }}>
@@ -271,7 +265,7 @@ export default function OrganizerEvents() {
                         borderColor='transparent'>
                         <Flex align='center'>
                           <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.event_name}
+                            {tData.ad_title}
                           </Text>
                         </Flex>
                       </Td> 
@@ -281,7 +275,7 @@ export default function OrganizerEvents() {
                         borderColor='transparent'>
                         <Flex align='center'>
                           <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.event_description}
+                            {tData.ad_img_loc}
                           </Text>
                         </Flex>
                       </Td> 
@@ -291,7 +285,7 @@ export default function OrganizerEvents() {
                         borderColor='transparent'>
                         <Flex align='center'>
                           <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.start_time}
+                            {tData.ad_begin_time}
                           </Text>
                         </Flex>
                       </Td> 
@@ -301,52 +295,18 @@ export default function OrganizerEvents() {
                         borderColor='transparent'>
                         <Flex align='center'>
                           <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.end_time}
+                            {tData.ad_end_time}
                           </Text>
                         </Flex>
                       </Td> 
-                      <Td
-                        fontSize={{ sm: "14px" }}
-                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
-                        borderColor='transparent'>
-                        <Flex align='center'>
-                          <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.last_registration_date}
-                          </Text>
-                        </Flex>
-                      </Td>
-                      <Td
-                        fontSize={{ sm: "14px" }}
-                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
-                        borderColor='transparent'>
-                        <Flex align='center'>
-                          <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.capacity}
-                          </Text>
-                        </Flex>
-                      </Td> 
-                      <Td
-                        fontSize={{ sm: "14px" }}
-                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
-                        borderColor='transparent'>
-                        <Flex align='center'>
-                          <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.entry_fees}
-                          </Text>
-                        </Flex>
-                      </Td>  
                       <Td>
                       <Flex pl='25px' pr='25px' justify='space-between' mb='10px' align='center'>
                         <Button onClick={()=> { setIsUpdateCheck(true);
                           setEditEvent({
-                          event_id: tData.event_id,
-                          event_name: tData.event_name,
-                          event_description: tData.event_description,
-                          start_time: tData.start_time,
-                          end_time: tData.end_time,
-                          capacity: tData.capacity,
-                          entry_fees: tData.entry_fees,
-                          last_registration_date: tData.last_registration_date,
+                          ad_title: tData.ad_title,
+                          ad_img_loc: tData.ad_img_loc,
+                          start_time: tData.ad_begin_time,
+                          end_time: tData.ad_end_time,
                           }); onOpen()}}>
                           <Icon as={MdModeEdit} width='20px' height='20px' color='inherit' /> 
                         </Button>
@@ -370,23 +330,23 @@ export default function OrganizerEvents() {
           <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent>
-              <ModalHeader>Event Details</ModalHeader>
+              <ModalHeader>Ad Details</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
               <form onSubmit={handleSubmit} style={{'padding':'20px'}}>
                 <FormControl>
                   {/* First Name  */}
                 <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
-                    Ad Name
+                    Ad Title
                   </FormLabel>
-                  <Input variant='auth' name="event_name" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='text' 
-                  placeholder='Enter Event Name' mb='24px' onChange={handleChange} defaultValue={editEvent.event_name || ""} fontWeight='500' size='lg'
+                  <Input variant='auth' name="ad_title" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='text' 
+                  placeholder='Enter Ad Title' mb='24px' onChange={handleChange} defaultValue={editEvent.ad_title || ""} fontWeight='500' size='lg'
                   />
                   <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
-                    Ad Description
+                    Ad Image Url
                   </FormLabel>
-                  <Input variant='auth' name="event_description" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='textarea' 
-                  placeholder='Enter Event Description' onChange={handleChange} defaultValue={editEvent.event_description || ""} mb='24px' fontWeight='500' size='lg'
+                  <Input variant='auth' name="ad_img_loc" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='textarea' 
+                  placeholder='Enter Ad Image url' onChange={handleChange} defaultValue={editEvent.ad_img_loc || ""} mb='24px' fontWeight='500' size='lg'
                   />
                   <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
                     Start Time
@@ -394,15 +354,6 @@ export default function OrganizerEvents() {
                   <Input variant='auth' name="start_time" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='datetime-local' 
                   mb='24px' onChange={handleChange} defaultValue={editEvent.start_time || ""} fontWeight='500' size='lg'
                   />
-                  <FormLabel
-                    display='flex'
-                    ms='4px'
-                    fontSize='sm'
-                    fontWeight='500'
-                    color={textColor}
-                    mb='8px'>
-                    End Time<Text color={brandStars}>*</Text>
-                  </FormLabel>
                   <Input
                     isRequired={true}
                     variant='auth'
@@ -416,39 +367,6 @@ export default function OrganizerEvents() {
                     fontWeight='500'
                     size='lg'
                   />
-                  <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
-                    Entry Fees
-                  </FormLabel>
-                  <Input variant='auth' name="entry_fees" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='number' 
-                  mb='24px' onChange={handleChange} defaultValue={editEvent.entry_fees || 0} fontWeight='500' size='lg'
-                  />
-                  <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
-                    Capacity
-                  </FormLabel>
-                  <Input variant='auth' name="capacity" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='number' 
-                  mb='24px' onChange={handleChange} defaultValue={editEvent.capacity || 0} fontWeight='500' size='lg'
-                  />
-                  <FormLabel
-                    ms='4px'
-                    fontSize='sm'
-                    fontWeight='500'
-                    color={textColor}
-                    display='flex'>
-                    Last Registration Date<Text color={brandStars}>*</Text>
-                  </FormLabel>
-                  <Input
-                    isRequired={true}
-                    variant='auth'
-                    fontSize='sm'
-                    ms={{ base: "0px", md: "0px" }}
-                    type='datetime-local'
-                    name = 'last_registration_date'
-                    onChange={handleChange}
-                    defaultValue={editEvent.last_registration_date || null}
-                    mb='24px'
-                    fontWeight='500'
-                    size='lg'
-                  />
                   <Flex pl='25px' pr='25px' justify='space-between' mb='10px' align='center'>
                     <Button type="submit"
                       fontSize='sm'
@@ -457,7 +375,7 @@ export default function OrganizerEvents() {
                       w='100%'
                       h='50'
                       mb='24px'>
-                      {isUpdateCheck ? "Update Event": "Create Event"}
+                      {isUpdateCheck ? "Update Ad": "Create Ad"}
                       
                     </Button>
                   </Flex>
@@ -493,7 +411,7 @@ export default function OrganizerEvents() {
                 fontSize='20px'
                 fontWeight='700'
                 lineHeight='100%'>
-                In-Progress Events
+                In-Progress Ads
               </Text>
               <Menu />
             </Flex>
@@ -525,7 +443,7 @@ export default function OrganizerEvents() {
                         borderColor='transparent'>
                         <Flex align='center'>
                           <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.event_name}
+                            {tData.ad_title}
                           </Text>
                         </Flex>
                       </Td> 
@@ -535,7 +453,7 @@ export default function OrganizerEvents() {
                         borderColor='transparent'>
                         <Flex align='center'>
                           <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.event_description}
+                            {tData.ad_img_loc}
                           </Text>
                         </Flex>
                       </Td> 
@@ -545,7 +463,7 @@ export default function OrganizerEvents() {
                         borderColor='transparent'>
                         <Flex align='center'>
                           <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.start_time}
+                            {tData.ad_begin_time}
                           </Text>
                         </Flex>
                       </Td> 
@@ -555,52 +473,19 @@ export default function OrganizerEvents() {
                         borderColor='transparent'>
                         <Flex align='center'>
                           <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.end_time}
+                            {tData.ad_end_time}
                           </Text>
                         </Flex>
                       </Td> 
-                      <Td
-                        fontSize={{ sm: "14px" }}
-                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
-                        borderColor='transparent'>
-                        <Flex align='center'>
-                          <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.last_registration_date}
-                          </Text>
-                        </Flex>
-                      </Td>
-                      <Td
-                        fontSize={{ sm: "14px" }}
-                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
-                        borderColor='transparent'>
-                        <Flex align='center'>
-                          <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.capacity}
-                          </Text>
-                        </Flex>
-                      </Td> 
-                      <Td
-                        fontSize={{ sm: "14px" }}
-                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
-                        borderColor='transparent'>
-                        <Flex align='center'>
-                          <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.entry_fees}
-                          </Text>
-                        </Flex>
-                      </Td>  
                       <Td>
                       <Flex pl='25px' pr='25px' justify='space-between' mb='10px' align='center'>
                         <Button onClick={()=> { setIsUpdateCheck(true);
                           setEditEvent({
-                          event_id: tData.event_id,
-                          event_name: tData.event_name,
-                          event_description: tData.event_description,
-                          start_time: tData.start_time,
-                          end_time: tData.end_time,
-                          capacity: tData.capacity,
-                          entry_fees: tData.entry_fees,
-                          last_registration_date: tData.last_registration_date,
+                          ad_id: tData.ad_id,
+                          ad_title: tData.ad_title,
+                          ad_img_loc: tData.ad_img_loc,
+                          ad_begin_time: tData.ad_begin_time,
+                          ad_end_time: tData.ad_end_time,
                           }); onOpen()}}>
                           <Icon as={MdModeEdit} width='20px' height='20px' color='inherit' /> 
                         </Button>
@@ -632,7 +517,7 @@ export default function OrganizerEvents() {
                 fontSize='20px'
                 fontWeight='700'
                 lineHeight='100%'>
-                Rejected Events
+                Rejected ads
               </Text>
               <Menu />
             </Flex>
@@ -664,7 +549,7 @@ export default function OrganizerEvents() {
                         borderColor='transparent'>
                         <Flex align='center'>
                           <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.event_name}
+                            {tData.ad_title}
                           </Text>
                         </Flex>
                       </Td> 
@@ -674,7 +559,7 @@ export default function OrganizerEvents() {
                         borderColor='transparent'>
                         <Flex align='center'>
                           <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.event_description}
+                            {tData.ad_img_loc}
                           </Text>
                         </Flex>
                       </Td> 
@@ -684,7 +569,7 @@ export default function OrganizerEvents() {
                         borderColor='transparent'>
                         <Flex align='center'>
                           <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.start_time}
+                            {tData.ad_begin_time}
                           </Text>
                         </Flex>
                       </Td> 
@@ -694,52 +579,17 @@ export default function OrganizerEvents() {
                         borderColor='transparent'>
                         <Flex align='center'>
                           <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.end_time}
+                            {tData.ad_end_time}
                           </Text>
                         </Flex>
-                      </Td> 
-                      <Td
-                        fontSize={{ sm: "14px" }}
-                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
-                        borderColor='transparent'>
-                        <Flex align='center'>
-                          <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.last_registration_date}
-                          </Text>
-                        </Flex>
-                      </Td>
-                      <Td
-                        fontSize={{ sm: "14px" }}
-                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
-                        borderColor='transparent'>
-                        <Flex align='center'>
-                          <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.capacity}
-                          </Text>
-                        </Flex>
-                      </Td> 
-                      <Td
-                        fontSize={{ sm: "14px" }}
-                        minW={{ sm: "150px", md: "200px", lg: "auto" }}
-                        borderColor='transparent'>
-                        <Flex align='center'>
-                          <Text color={textColor} fontSize='sm' fontWeight='700'>
-                            {tData.entry_fees}
-                          </Text>
-                        </Flex>
-                      </Td>  
-                      <Td>
                       <Flex pl='25px' pr='25px' justify='space-between' mb='10px' align='center'>
                         <Button onClick={()=> { setIsUpdateCheck(true);
                           setEditEvent({
-                          event_id: tData.event_id,
-                          event_name: tData.event_name,
+                          ad_title: tData.ad_title,
+                          ad_img_loc: tData.ad_img_loc,
                           event_description: tData.event_description,
-                          start_time: tData.start_time,
-                          end_time: tData.end_time,
-                          capacity: tData.capacity,
-                          entry_fees: tData.entry_fees,
-                          last_registration_date: tData.last_registration_date,
+                          ad_begin_time: tData.ad_begin_time,
+                          ad_end_time: tData.ad_end_time,
                           }); onOpen()}}>
                           <Icon as={MdModeEdit} width='20px' height='20px' color='inherit' /> 
                         </Button>

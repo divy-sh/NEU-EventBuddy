@@ -70,13 +70,6 @@ const UpdateRoutes = () => {
       path: "/profile",
       icon: <Icon as={MdPerson} width='20px' height='20px' color='inherit' />,
       component: Profile,
-    },
-    {
-      name: "Event Info",
-      layout: "/admin",
-      path: "/event-info",
-      icon: <Icon as={MdLock} width='20px' height='20px' color='inherit' />,
-      component: EventDisplay,
     }
   ];
     if(userLoggedData.is_organizer == true) {
@@ -93,7 +86,7 @@ const UpdateRoutes = () => {
           layout: "/admin",
           path: "/all-ads",
           icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
-          component: OrganizerEvents,
+          component: OrganizerAds,
         }
       ])
     }
@@ -122,6 +115,15 @@ const UpdateRoutes = () => {
         },
       ])
     }
+    routes = routes.concat(
+      [{
+        name: "",
+        layout: "/admin",
+        path: "/event-info",
+        icon: <Icon as={MdLock} width='0px' height='0px' color='inherit' />,
+        component: EventDisplay,
+      }]
+    )
   }
 }
 
