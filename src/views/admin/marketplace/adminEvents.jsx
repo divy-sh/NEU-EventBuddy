@@ -119,28 +119,28 @@ export default function AdminEvents() {
 
   const rejectEvent = (async (event_id) => {
     await axios.get(`${API_ENDPOINT}/admin/approve/event?email=${userEmail}&event_id=${event_id}&status=REJECTED`)
-        .then(function (response) {
-          console.log(response);
-          if(response.status == 200) {
-            // sessionStorage.setItem("", JSON.stringify(response.data.user))
-            // Swal.fire({
-            //   title: "Event Rejected!",
-            //   icon: "success"
-            // });
-            console.log(response.data)
-            Swal.fire({
-              position: "top-end",
-              icon: "success",
-              title: "Event Rejected!",
-              showConfirmButton: false,
-              timer: 1000
-            });
-            history.push('/admin/review-events')
-          }
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      .then(function (response) {
+        console.log(response);
+        if(response.status == 200) {
+          // sessionStorage.setItem("", JSON.stringify(response.data.user))
+          // Swal.fire({
+          //   title: "Event Rejected!",
+          //   icon: "success"
+          // });
+          console.log(response.data)
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Event Rejected!",
+            showConfirmButton: false,
+            timer: 1000
+          });
+          history.push('/admin/review-events')
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   })
 
   return (

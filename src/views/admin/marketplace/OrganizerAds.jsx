@@ -111,6 +111,31 @@ export default function OrganizerEvents() {
     });
   }, [])
 
+  const deleteAd = (async (ad_id) => {
+    await axios.delete(`${API_ENDPOINT}/ad/delete?ad_id=${ad_id}`)
+        .then(function (response) {
+          console.log(response);
+          if(response.status == 200) {
+            // sessionStorage.setItem("", JSON.stringify(response.data.user))
+            // Swal.fire({
+            //   title: "Event Rejected!",
+            //   icon: "success"
+            // });
+            console.log(response.data)
+            Swal.fire({
+              icon: "success",
+              title: "Ad Deleted Successfully!",
+              showConfirmButton: false,
+              timer: 1500
+            });
+            window.location.reload();
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+  })
+
 
   const handleSubmit = async (e) => {
   
@@ -488,6 +513,10 @@ export default function OrganizerEvents() {
                           ad_end_time: tData.ad_end_time,
                           }); onOpen()}}>
                           <Icon as={MdModeEdit} width='20px' height='20px' color='inherit' /> 
+                        </Button>
+                        <Button onClick={()=> { deleteAd(tData.ad_id);
+                          }}>
+                          <Icon as={MdDelete} width='20px' height='20px' color='inherit' /> 
                         </Button>
                       </Flex>
                       </Td>     
