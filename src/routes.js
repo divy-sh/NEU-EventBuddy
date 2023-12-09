@@ -19,6 +19,7 @@ import EventDisplay from "views/admin/marketplace/event";
 import OrganizerEvents from "views/admin/marketplace/organizerEvents";
 import AdminEvents from "views/admin/marketplace/adminEvents";
 import AdminAds from "views/admin/marketplace/AdminAds";
+import OrganizerAds from "views/admin/marketplace/OrganizerAds"
 
 
 // Auth Imports
@@ -87,6 +88,13 @@ const UpdateRoutes = () => {
           icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
           component: OrganizerEvents,
         },
+        {
+          name: 'Organize Ads',
+          layout: "/admin",
+          path: "/all-ads",
+          icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
+          component: OrganizerEvents,
+        }
       ])
     }
     if(userLoggedData.is_admin == true) {

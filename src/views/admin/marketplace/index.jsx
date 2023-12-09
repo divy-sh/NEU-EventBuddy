@@ -209,6 +209,7 @@ export default function Marketplace() {
                 eventInfo = {routes[5]}
               />
               ))}
+              <Flex><button onClick={addEvent}>Add Event</button></Flex>
             </SimpleGrid>
           </Flex>
         </Flex>

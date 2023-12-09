@@ -211,6 +211,17 @@ export default function OrganizerEvents() {
           mb='4px'>
           All Events
         </Text>
+        <Button
+          onClick={() => {setIsUpdateCheck(false); setEditEvent({}); onOpen()}}
+          variant='darkBrand'
+          color='white'
+          fontSize='xl'
+          fontWeight='500'
+          borderRadius='10px'
+          px='24px'
+          py='5px'>
+          Add Event
+        </Button> 
       </Flex>
         <Box p={{ base: "10px", md: "40px", xl: "40px" }}>
           <SimpleGrid

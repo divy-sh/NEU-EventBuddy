@@ -124,11 +124,11 @@ export default function OrganizerEvents() {
     console.log(isUpdateCheck)
 
     if(isUpdateCheck) {
-      await axios.post(`${API_ENDPOINT}/event/update`,
+      await axios.post(`${API_ENDPOINT}/ad/update`,
       {
-        "event_id": editEvent.event_id,
-        "event_name": editEvent.event_name,
-        "event_description": editEvent.event_description,
+        "ad_id": editEvent.ad_id,
+        "ad_title": editEvent.ad_title,
+        "ad_img_loc": editEvent.ad_img_loc,
         "start_time" : editEvent.start_time,
         "end_time" : editEvent.end_time,
         "entry_fees": editEvent.entry_fees,
@@ -211,6 +211,17 @@ export default function OrganizerEvents() {
           mb='4px'>
           All Events
         </Text>
+        <Button
+          onClick={() => {setIsUpdateCheck(false); setEditEvent({}); onOpen()}}
+          variant='darkBrand'
+          color='white'
+          fontSize='xl'
+          fontWeight='500'
+          borderRadius='10px'
+          px='24px'
+          py='5px'>
+          Add Ads
+        </Button> 
       </Flex>
         <Box p={{ base: "10px", md: "40px", xl: "40px" }}>
           <SimpleGrid
@@ -228,7 +239,7 @@ export default function OrganizerEvents() {
                 fontSize='20px'
                 fontWeight='700'
                 lineHeight='100%'>
-                Approved Events
+                Approved Ads
               </Text>
               <Menu />
             </Flex>
@@ -366,13 +377,13 @@ export default function OrganizerEvents() {
                 <FormControl>
                   {/* First Name  */}
                 <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
-                    Event Name
+                    Ad Name
                   </FormLabel>
                   <Input variant='auth' name="event_name" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='text' 
                   placeholder='Enter Event Name' mb='24px' onChange={handleChange} defaultValue={editEvent.event_name || ""} fontWeight='500' size='lg'
                   />
                   <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
-                    Event Description
+                    Ad Description
                   </FormLabel>
                   <Input variant='auth' name="event_description" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='textarea' 
                   placeholder='Enter Event Description' onChange={handleChange} defaultValue={editEvent.event_description || ""} mb='24px' fontWeight='500' size='lg'
