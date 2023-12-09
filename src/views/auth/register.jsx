@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import { NavLink } from "react-router-dom";
 // Chakra imports
 import {
+  Checkbox,
   Box,
   Button,
   Flex,
@@ -31,6 +32,7 @@ function SignUp() {
   const API_ENDPOINT = 'http://localhost:8080'
 
   const history = useHistory();
+  var reg_org = false;
     
   const handleSubmit = async (e) => {
   
@@ -48,7 +50,7 @@ function SignUp() {
         "first_name" : firstName.value,
         "last_name" : lastName.value,
         "date_of_birth" : birthDate.value,
-        "is_organizer" : true
+        "is_organizer" : reg_org
       })
         .then(function (response) {
           // console.log(response);
@@ -248,6 +250,23 @@ function SignUp() {
                 </Text>
               </NavLink>
             </Flex> */}
+            <FormControl display='flex' alignItems='center'>
+                <Checkbox
+                  id='remember-login'
+                  colorScheme='brandScheme'
+                  mb='5px'
+                  onChange={() => reg_org = !reg_org}
+                />
+                <FormLabel
+                  htmlFor='remember-login'
+                  mb='5px'
+                  ml='5px'
+                  fontWeight='normal'
+                  color={textColor}
+                  fontSize='sm'>
+                  Register as an Organizer
+                </FormLabel>
+              </FormControl>
             <Button type="submit"
               fontSize='sm'
               variant='brand'

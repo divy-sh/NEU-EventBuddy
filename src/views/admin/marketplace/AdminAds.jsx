@@ -77,7 +77,7 @@ export default function OrganizerEvents() {
   const headerGroups = ["Name", "Description", "Start Time", "End Time", "Last Registration Time", "Capacity", "Entry Fees", "Actions"]
 
   useEffect(async () => {
-    await axios.get(`${API_ENDPOINT}/event/get/all?status=approved`)
+    await axios.get(`${API_ENDPOINT}/ad/get/all/status?approval=approved`)
         .then(function (response) {
           console.log(response);
           if(response.status == 200) {
@@ -89,7 +89,7 @@ export default function OrganizerEvents() {
           console.log(error);
         });
 
-    await axios.get(`${API_ENDPOINT}/event/get/all?status=in-progress`)
+    await axios.get(`${API_ENDPOINT}/ad/get/all/status?approval=in-progress`)
       .then(function (response) {
         console.log(response);
         if(response.status == 200) {
@@ -101,7 +101,7 @@ export default function OrganizerEvents() {
         console.log(error);
     });
     
-    await axios.get(`${API_ENDPOINT}/event/get/all?status=rejected`)
+    await axios.get(`${API_ENDPOINT}/ad/get/all/status?approval=rejected`)
       .then(function (response) {
         console.log(response);
         if(response.status == 200) {
