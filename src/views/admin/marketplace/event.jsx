@@ -9,6 +9,16 @@ import {
   Text,
   useColorModeValue,
   SimpleGrid,
+  FormControl,FormLabel,
+  Input,
+  Modal, 
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
 } from "@chakra-ui/react";
 
 // Custom components
@@ -16,8 +26,11 @@ import Banner from "views/admin/marketplace/components/Banner";
 import Information from "views/admin/profile/components/Information";
 import Card from "components/card/Card.js";
 import Swal from 'sweetalert2'
+import axios from "axios";
 
 export default function EventDisplay() {
+  const API_ENDPOINT = 'http://localhost:8080';
+  const userData = JSON.parse(sessionStorage.getItem('userLoggedData'));
   // Chakra Color Mode
   const textColor = useColorModeValue("secondaryGray.900", "white");
   const textColorBrand = useColorModeValue("brand.500", "white");
@@ -28,6 +41,7 @@ export default function EventDisplay() {
     "unset"
   );
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [registeredEvents, setRegisteredEvents] = useState([]);
   const history = useHistory();
   // const location = useLocation();
@@ -48,59 +62,42 @@ export default function EventDisplay() {
     setSelectedEvent(selectedE)
   }, [])
 
-  // Function to add an event to the array
-  const addEvent = () => {
-    // You can customize the event data as needed
-    const newEvent = {
-      id: registeredEvents.length + 1,
-      name: `Event ${registeredEvents.length + 1}`,
-      date: new Date().toLocaleDateString(),
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    // Update the state with the new event
-    setRegisteredEvents([...registeredEvents, newEvent]);
-  };
-  
-  let usernameInput;
-  let passwordInput;
-  
-  const buyTickets = () => {
-    Swal.fire({
-      title: 'Card Payment',
-      html: `
-        <input type="text" id="username" class="swal2-input" placeholder="Username">
-        <input type="password" id="password" class="swal2-input" placeholder="Password">
-      `,
-      confirmButtonText: 'Pay for Tickets',
-      focusConfirm: false,
-      didOpen: () => {
-        const popup = Swal.getPopup() || null
-        usernameInput = popup.querySelector('#username') 
-        passwordInput = popup.querySelector('#password')
-        // usernameInput.onkeyup = (event) => event.key === 'Enter' && Swal.clickConfirm()
-        // passwordInput.onkeyup = (event) => event.key === 'Enter' && Swal.clickConfirm()
-      },
-      preConfirm: () => {
-        const username = usernameInput.value
-        const password = passwordInput.value
-        if (!username || !password) {
-          Swal.showValidationMessage(`Please enter username and password`)
+      const {cc_number, cvv, holder_name} = e.target;
+
+      console.log(`Form submitted, ${cc_number.value}, ${cvv.value}, ${holder_name.value}`)
+      
+      // Pass to API
+      await axios.post(`${API_ENDPOINT}/transaction/buy/ticket`,
+       {
+        "credit_card_num" : cc_number.value,
+        "email_id" : userData.email_id,
+        "event_id" : selectedEvent.event_id,
+        "total_tickets" : capacity
+      })
+      .then(function (response) {
+        // console.log(response);
+        if(response.status == 200) {
+          Swal.fire({
+            title: "Transaction Successful!",
+            icon: "success",
+            confirmButtonText: "See you there!"
+          });
+          history.push('/admin/event-info')
         }
-        return { username, password }
-      },
-    })
+      })
+      .catch(function (error) {
+        // console.log(error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops... Something went wrong",
+          text: error,
+          confirmButtonText: "Try Again!"
+        });
+      });
   }
-
-  // const callEventPage = (event) => {
-  //   // Your event registration logic...
-
-  //   // Redirect to the new page with data
-  //   history.push({
-  //     pathname: '/',
-  //     state: { eventData: event },
-  //   });
-  // };
-
 
   return (
     <Card
@@ -192,7 +189,7 @@ export default function EventDisplay() {
         +
       </Button>
       <Button
-        onClick={buyTickets}
+        onClick={onOpen}
         variant='darkBrand'
         color='white'
         fontSize='xl'
@@ -205,6 +202,63 @@ export default function EventDisplay() {
       </Button> 
       </Flex>
       </Box>
+      <>
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Buy {capacity} Ticket's for {selectedEvent.event_name}</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+            <form onSubmit={handleSubmit} style={{'padding':'20px'}}>
+              <FormControl>
+                {/* First Name  */}
+              <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
+                  Credit Card Number
+                </FormLabel>
+                <Input variant='auth' name="cc_number" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='text' 
+                mb='24px' value="" fontWeight='500' size='lg'
+                />
+                <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
+                  Cvv
+                </FormLabel>
+                <Input variant='auth' name="cvv" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='text' 
+                value="" mb='24px' fontWeight='500' size='lg'
+                />
+                <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
+                  Card Holder Name
+                </FormLabel>
+                <Input variant='auth' name="holder_name" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='password' 
+                mb='24px' value="" fontWeight='500' size='lg'
+                />
+                {/* <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
+                  Birth Date
+                </FormLabel>
+                <Input variant='auth' name="lastName" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='datetime-local' 
+                value={userData.date_of_birth || ""} mb='24px' fontWeight='500' size='lg'
+                /> */}
+                <Flex pl='25px' pr='25px' justify='space-between' mb='10px' align='center'>
+                  <Button type="submit"
+                    fontSize='sm'
+                    variant='brand'
+                    fontWeight='500'
+                    w='100%'
+                    h='50'
+                    mb='24px'>
+                    Make Payment
+                  </Button>
+                </Flex>
+              </FormControl>
+              </form>
+            </ModalBody>
+            {/* <ModalFooter>
+              <Button colorScheme='blue' mr={3} onClick={onClose}>
+                Close
+              </Button>
+              <Button variant='ghost'>Secondary Action</Button>
+            </ModalFooter> */}
+          </ModalContent>
+        </Modal>
+      </>
     </Card>
   );
 }

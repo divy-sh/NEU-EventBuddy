@@ -5,25 +5,36 @@ import {
   Box,
   Button,
   Flex,
+  FormControl,FormLabel,
+  Input,
+  Table,
+  Tbody,
+  Menu,
   Icon,
   Image,
   Link,
+  SimpleGrid,
   Text,
   useColorModeValue,
   Grid,
   useDisclosure,
   Modal, 
-  ModalOverlay
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 
 // Custom components
+import Card from "components/card/Card.js";
 import Banner from "views/admin/profile/components/Banner";
 import Tickets from "views/admin/profile/components/Tickets";
 import Transactions from "views/admin/profile/components/Transactions";
 import { UpdateRoutes } from 'routes';
 import { useHistory } from 'react-router-dom';
 import Swal from "sweetalert2";
-
 
 // Assets
 import banner from "assets/img/auth/banner.png";
@@ -33,10 +44,15 @@ const API_ENDPOINT = 'http://localhost:8080';
 
 export default function Overview() {
   const userData = JSON.parse(sessionStorage.getItem('userLoggedData'));
+  // console.log(userData)
+  const textColor = useColorModeValue("secondaryGray.900", "white");
   const history = useHistory();
 
   const [allTransactions, setAllTransactions] = useState([]);
   const [allTickets, setAllTickets] = useState([]);
+  const [userCards, setUserCards] = useState([]);
+  const [updateProfileData, setUpdateProfileData] = useState({
+  });
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const DeleteAccount = async () => {
@@ -64,6 +80,83 @@ export default function Overview() {
     }
   };
   
+  const handleChange = (e) => {
+    // Update the form data as the user types
+    // console.log(editEvent)
+    // setEditEvent({ ...editEvent, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+      const {firstName, lastName, password} = e.target;
+
+      console.log(`Form submitted, ${firstName.value}, ${lastName.value}, ${password.value}`)
+      
+      // Pass to API
+      await axios.post(`${API_ENDPOINT}/user/update`,
+       {
+        "user_password" : password.value,
+        "first_name" : firstName.value,
+        "last_name" : lastName.value
+      })
+      .then(function (response) {
+        // console.log(response);
+        if(response.status == 200) {
+          Swal.fire({
+            title: "Profile Updated Successfully!",
+            icon: "success",
+            confirmButtonText: "Back to Work!"
+          });
+          history.push('/admin/sign-in')
+        }
+      })
+      .catch(function (error) {
+        // console.log(error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops... Something went wrong",
+          text: error,
+          confirmButtonText: "Try Again!"
+        });
+      });
+  }
+
+  const handleCardSubmit = async (e) => {
+    e.preventDefault();
+
+      const {cc_number, expiry_date} = e.target;
+
+      console.log(`Form submitted, ${cc_number}, ${expiry_date}`)
+      
+      // Pass to API
+      await axios.post(`${API_ENDPOINT}/user/update`,
+       {
+        "user_password" : password.value,
+        "first_name" : firstName.value,
+        "last_name" : lastName.value
+      })
+      .then(function (response) {
+        // console.log(response);
+        if(response.status == 200) {
+          Swal.fire({
+            title: "Profile Updated Successfully!",
+            icon: "success",
+            confirmButtonText: "Back to Work!"
+          });
+          history.push('/admin/sign-in')
+        }
+      })
+      .catch(function (error) {
+        // console.log(error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops... Something went wrong",
+          text: error,
+          confirmButtonText: "Try Again!"
+        });
+      });
+  }
 
 
   const cardShadow = useColorModeValue(
@@ -80,7 +173,7 @@ export default function Overview() {
         .catch(function (error) {
           console.log(error);
         });
-  await axios.get(`${API_ENDPOINT}/user/get/ticket?email_id=${userData.email_id}`)
+    await axios.get(`${API_ENDPOINT}/user/get/ticket?email_id=${userData.email_id}`)
       .then(function (response) {
         if(response.status == 200) {
           setAllTickets(response.data);
@@ -89,8 +182,17 @@ export default function Overview() {
       .catch(function (error) {
         console.log(error);
       });
-      },
-  [])
+    await axios.get(`${API_ENDPOINT}/user/get/card?email_id=${userData.email_id}`)
+      .then(function (response) {
+        if(response.status == 200) {
+          setUserCards(response.data);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    }, []
+  )
 
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
@@ -135,7 +237,7 @@ export default function Overview() {
             onClick={()=> {onOpen()}}
             variant='darkBrand'
             color='white'
-            fontSize='xl'
+            fontSize='l'
             fontWeight='500'
             borderRadius='10px'
             px='24px'
@@ -146,7 +248,7 @@ export default function Overview() {
             onClick={DeleteAccount}
             variant='darkBrand'
             color='white'
-            fontSize='xl'
+            fontSize='l'
             fontWeight='500'
             borderRadius='10px'
             px='24px'
@@ -154,9 +256,125 @@ export default function Overview() {
             Delete Account
           </Button> 
         </Flex>
-        <Modal isOpen={isOpen} onClose={onClose}>
+        <>
+          <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Event Details</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+              <form onSubmit={handleSubmit} style={{'padding':'20px'}}>
+                <FormControl>
+                  {/* First Name  */}
+                <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
+                    First Name
+                  </FormLabel>
+                  <Input variant='auth' name="firstName" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='text' 
+                  mb='24px' value={userData.first_name || ""} fontWeight='500' size='lg'
+                  />
+                  <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
+                    Last Name
+                  </FormLabel>
+                  <Input variant='auth' name="lastName" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='text' 
+                  value={userData.last_name || ""} mb='24px' fontWeight='500' size='lg'
+                  />
+                  <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
+                    Password
+                  </FormLabel>
+                  <Input variant='auth' name="password" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='password' 
+                  mb='24px' fontWeight='500' size='lg'
+                  />
+                  {/* <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
+                    Birth Date
+                  </FormLabel>
+                  <Input variant='auth' name="lastName" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='datetime-local' 
+                  value={userData.date_of_birth || ""} mb='24px' fontWeight='500' size='lg'
+                  /> */}
+                  <Flex pl='25px' pr='25px' justify='space-between' mb='10px' align='center'>
+                    <Button type="submit"
+                      fontSize='sm'
+                      variant='brand'
+                      fontWeight='500'
+                      w='100%'
+                      h='50'
+                      mb='24px'>
+                      Update Profile
+                    </Button>
+                  </Flex>
+                </FormControl>
+                </form>
+              </ModalBody>
+              {/* <ModalFooter>
+                <Button colorScheme='blue' mr={3} onClick={onClose}>
+                  Close
+                </Button>
+                <Button variant='ghost'>Secondary Action</Button>
+              </ModalFooter> */}
+            </ModalContent>
           </Modal>
+        </>
+        <Card
+          mt="20px"
+          direction='row'
+          w='100%'
+          px='2px'
+          overflowX={{ sm: "scroll", lg: "hidden" }}>
+          <Text
+            color={"navy"}
+            fontWeight='bold'
+            fontSize='2xl'
+            mt='2px'
+            mb='4px'
+            ml="25px">
+            Add New Credit Card
+          </Text>
+          <SimpleGrid
+          mb='20px'
+          columns={{ sm: 1, md: 2 }}
+          spacing={{ base: "20px", xl: "20px" }}>
+        {/* Credit Card */}
+        <form onSubmit={handleSubmit} style={{'padding':'20px'}}>
+          <FormControl>
+            {/* First Name  */}
+          <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
+              Credit Card Number
+            </FormLabel>
+            <Input variant='auth' name="cc_number" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='text' 
+            mb='24px' fontWeight='500' size='lg'
+            />
+            <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
+              Cvv
+            </FormLabel>
+            <Input variant='auth' name="cvv" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='text' 
+            value="" mb='24px' fontWeight='500' size='lg'
+            />
+            <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
+              Expiry Date
+            </FormLabel>
+            <Input variant='auth' name="expiry_date" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='date' 
+            mb='24px' fontWeight='500' size='lg'
+            />
+            {/* <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
+              Birth Date
+            </FormLabel>
+            <Input variant='auth' name="lastName" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='datetime-local' 
+            value={userData.date_of_birth || ""} mb='24px' fontWeight='500' size='lg'
+            /> */}
+            <Flex pl='25px' pr='25px' justify='space-between' mb='10px' align='center'>
+              <Button type="submit"
+                fontSize='sm'
+                variant='brand'
+                fontWeight='500'
+                w='100%'
+                h='50'
+                mb='24px'>
+                Add Credit Card
+              </Button>
+            </Flex>
+          </FormControl>
+        </form>
+        </SimpleGrid>
+        </Card>
     </Box>
   );
 }
