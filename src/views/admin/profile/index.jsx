@@ -70,9 +70,9 @@ export default function Overview() {
           if (response.status == 200) {  
             sessionStorage.removeItem('userLoggedData');
             UpdateRoutes();
+            history.push('/auth/sign-in');
           }
         }
-        history.push('/auth/sign-in');
       });
       
     } catch (error) {
