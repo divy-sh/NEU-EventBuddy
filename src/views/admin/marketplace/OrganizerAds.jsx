@@ -58,14 +58,11 @@ export default function OrganizerEvents() {
 
   const brandStars = useColorModeValue("brand.500", "brand.400");
   const [editEvent, setEditEvent] = useState({
-    event_id: 0,
-    event_name: '',
-    event_description: '',
-    start_time: '',
-    end_time: '',
-    entry_fees:0,
-    capacity:0,
-    last_registration_date: ''
+    ad_id: 0,
+    ad_title: '',
+    ad_img_loc: '',
+    ad_begin_time: '',
+    ad_end_time: '',
   });
   const handleChange = (e) => {
     // Update the form data as the user types
@@ -143,6 +140,7 @@ export default function OrganizerEvents() {
             text: "Your Ad has updated successfully",
             icon: "success"
           });
+          window.location.reload();
           // console.log(history)
           // history.push('/admin/all-event')
         }
@@ -175,6 +173,7 @@ export default function OrganizerEvents() {
             text: "Your Ad has been sent for Admin approval",
             icon: "success"
           });
+          window.location.reload();
           // history.push('/admin/all-event')
         }
       })
@@ -482,6 +481,7 @@ export default function OrganizerEvents() {
                       <Flex pl='25px' pr='25px' justify='space-between' mb='10px' align='center'>
                         <Button onClick={()=> { setIsUpdateCheck(true);
                           setEditEvent({
+                          ad_id: tData.ad_id,
                           ad_title: tData.ad_title,
                           ad_img_loc: tData.ad_img_loc,
                           ad_begin_time: tData.ad_begin_time,

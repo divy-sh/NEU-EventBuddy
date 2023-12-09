@@ -145,8 +145,7 @@ export default function OrganizerEvents() {
             text: "Your event has updated successfully",
             icon: "success"
           });
-          history.push('/admin/all-events')
-        }
+          window.location.reload();        }
       })
       .catch(function (error) {
         // .log(error);
@@ -180,7 +179,7 @@ export default function OrganizerEvents() {
             text: "Your event has been sent for Admin approval",
             icon: "success"
           });
-          history.push('/admin/all-events')
+          window.location.reload();
         }
       })
       .catch(function (error) {
