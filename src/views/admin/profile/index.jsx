@@ -70,7 +70,7 @@ export default function Overview() {
           if (response.status === 200) {  
             sessionStorage.removeItem('userLoggedData');
             UpdateRoutes();
-            history.push('/auth/signin');
+            history.push('/auth/sign-in');
           }
         }
       });
@@ -130,21 +130,21 @@ export default function Overview() {
       console.log(`Form submitted, ${cc_number}, ${expiry_date}`)
       
       // Pass to API
-      await axios.post(`${API_ENDPOINT}/user/update`,
+      await axios.post(`${API_ENDPOINT}/user/add/card?email=${userData.email_id}`,
        {
-        "user_password" : password.value,
-        "first_name" : firstName.value,
-        "last_name" : lastName.value
+        "email_id" : userData.email_id,
+        "credit_card_num" : cc_number.value,
+        "name" : userData.first_name + userData.last_name,
+        "expiry_date" : expiry_date.value
       })
       .then(function (response) {
         // console.log(response);
         if(response.status == 200) {
           Swal.fire({
-            title: "Profile Updated Successfully!",
+            title: "Created Card Added Successfully!",
             icon: "success",
-            confirmButtonText: "Back to Work!"
           });
-          history.push('/admin/sign-in')
+          history.push('/admin/profile')
         }
       })
       .catch(function (error) {
@@ -155,6 +155,7 @@ export default function Overview() {
           text: error,
           confirmButtonText: "Try Again!"
         });
+        history.push('/admin/profile')
       });
   }
 
@@ -182,8 +183,9 @@ export default function Overview() {
       .catch(function (error) {
         console.log(error);
       });
-    await axios.get(`${API_ENDPOINT}/user/get/card?email_id=${userData.email_id}`)
+    await axios.get(`${API_ENDPOINT}/user/get/card?email=${userData.email_id}`)
       .then(function (response) {
+        console.log("card", response.data)
         if(response.status == 200) {
           setUserCards(response.data);
         }
@@ -333,7 +335,7 @@ export default function Overview() {
           columns={{ sm: 1, md: 2 }}
           spacing={{ base: "20px", xl: "20px" }}>
         {/* Credit Card */}
-        <form onSubmit={handleSubmit} style={{'padding':'20px'}}>
+        <form onSubmit={handleCardSubmit} style={{'padding':'20px'}}>
           <FormControl>
             {/* First Name  */}
           <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
@@ -345,8 +347,8 @@ export default function Overview() {
             <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
               Cvv
             </FormLabel>
-            <Input variant='auth' name="cvv" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='text' 
-            value="" mb='24px' fontWeight='500' size='lg'
+            <Input variant='auth' name="cvv" fontSize='sm' ms={{ base: "0px", md: "0px" }} type='number' 
+            mb='24px' fontWeight='500' size='lg'
             />
             <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='500' color={textColor} mb='8px'>
               Expiry Date
@@ -373,6 +375,20 @@ export default function Overview() {
             </Flex>
           </FormControl>
         </form>
+        <>
+        {userCards.map((card, index) => {
+        return (
+          <Text
+            color={"navy"}
+            fontWeight='bold'
+            fontSize='xl'
+            mt='10px'
+            mb='4px'
+            ml="25px">
+            Credit Card: {card.credit_card_num}
+          </Text>
+          )})}
+          </>
         </SimpleGrid>
         </Card>
     </Box>

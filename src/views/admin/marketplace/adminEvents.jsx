@@ -109,6 +109,7 @@ export default function AdminEvents() {
               showConfirmButton: false,
               timer: 1000
             });
+            history.push('/admin/review-events')
           }
         })
         .catch(function (error) {
@@ -134,6 +135,7 @@ export default function AdminEvents() {
               showConfirmButton: false,
               timer: 1000
             });
+            history.push('/admin/review-events')
           }
         })
         .catch(function (error) {
@@ -170,11 +172,11 @@ export default function AdminEvents() {
             overflowX={{ sm: "scroll", lg: "hidden" }}>
             <Flex px='25px' justify='space-between' mb='10px' align='center'>
               <Text
-                color={"red"}
-                fontSize='15px'
+                color={"green"}
+                fontSize='20px'
                 fontWeight='700'
                 lineHeight='100%'>
-                
+                In-Progress Events
               </Text>
               <Menu />
             </Flex>
